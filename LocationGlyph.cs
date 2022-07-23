@@ -29,6 +29,15 @@
             base.UpdateCard();
         }
 
+        public void LateUpdate()
+        {
+            if ((WorldManager.instance.HoveredCard == MyGameCard || WorldManager.instance.DraggingCard == MyGameCard) && target != null)
+            {
+                target.HighlightRectangle.enabled = true;
+                target.HighlightRectangle.Color = Color.cyan;
+            }
+        }
+
         [TimedAction(Consts.STORAGE_PLACE + ".bind")]
         public void Bind()
         {

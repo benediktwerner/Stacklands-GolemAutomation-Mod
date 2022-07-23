@@ -25,6 +25,10 @@
       <HintPath>$(GAME_PATH)\Stacklands_Data\Managed\SokLoc.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="ShapesRuntime">
+      <HintPath>$(GAME_PATH)\Stacklands_Data\Managed\ShapesRuntime.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
