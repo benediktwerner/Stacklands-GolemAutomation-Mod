@@ -8,7 +8,7 @@ namespace GolemAutomation
     {
         public override bool DetermineCanHaveCardsWhenIsRoot => true;
 
-        public override bool CanHaveCard(CardData otherCard) => true;
+        public override bool CanHaveCard(CardData otherCard) => !Card.IsAlive(otherCard) || !filter.Contains(otherCard.Id);
 
         [ExtraData(Consts.FILTER + ".filter")]
         public string filterData = "";
@@ -66,7 +66,13 @@ namespace GolemAutomation
                 {
                     filter.Add(child.CardData.Id);
                 }
-                child = child.Child;
+                var c = child.Child;
+                if (Card.IsAlive(child))
+                {
+                    child.RemoveFromStack();
+                    child.SendIt();
+                }
+                child = c;
             }
 
             UpdateDescription();

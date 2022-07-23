@@ -53,7 +53,13 @@ namespace GolemAutomation
                             var vec = leaf.transform.position - card.transform.position;
                             card.Velocity = new Vector3(vec.x * 4f, 7f, vec.z * 4f);
                         }
+                        else if (Card.IsAlive(card))
+                        {
+                            card.RemoveFromStack();
+                            card.SendIt();
+                        }
                     }
+                    else WorldManager.instance.StackSend(card);
                     return;
                 }
 

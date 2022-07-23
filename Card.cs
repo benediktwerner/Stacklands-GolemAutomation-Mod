@@ -22,5 +22,12 @@ namespace GolemAutomation
             ScriptType = scriptType ?? typeof(CardData);
             IsBuilding = building;
         }
+
+        public static bool IsAlive(CardData card)
+        {
+            return card.MyCardType == CardType.Fish || card.MyCardType == CardType.Mobs;
+        }
+
+        public static bool IsAlive(GameCard card) => IsAlive(card.CardData);
     }
 }
