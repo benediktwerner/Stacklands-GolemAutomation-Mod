@@ -33,6 +33,10 @@ namespace GolemAutomation
                 card.Value = c.Value;
                 card.MyCardType = c.CardType;
                 card.IsBuilding = c.IsBuilding;
+                if (c.CardType == CardType.Structures)
+                {
+                    card.PickupSoundGroup = PickupSoundGroup.Heavy;
+                }
                 allCards.Add(card);
             }
 
