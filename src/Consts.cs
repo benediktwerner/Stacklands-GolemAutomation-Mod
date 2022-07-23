@@ -10,6 +10,10 @@
         public const string FILTER = PREFIX + "filter";
         public const string LOCATION_GLYPH = PREFIX + "location_glyph";
         public const string GOLEM = PREFIX + "golem";
+        public const string GOLEM_L = GOLEM + "_l";
+        public const string GOLEM_XL = GOLEM + "_xl";
+        public const string GOLEM_MOD_SELL = GOLEM + "_module_sell";
+        public const string GOLEM_MOD_SPEED = GOLEM + "_module_speed";
 
         public const string SUGAR = "sugar";
         public const string STICK = "stick";

@@ -26,7 +26,7 @@ namespace GolemAutomation
 
         public override void UpdateCard()
         {
-            if (CanStartAction())
+            if (MyGameCard.Parent == null && CanStartAction())
             {
                 MyGameCard.StartTimer(1f, new TimerAction(AddFilter), "Adding to filter", GetActionId(nameof(AddFilter)));
             }
@@ -50,7 +50,7 @@ namespace GolemAutomation
             var hasNew = false;
             while (child != null)
             {
-                if (child.CardData.MyCardType != CardType.Humans)
+                if (child.CardData.MyCardType != CardType.Humans && child.CardData is not Filter)
                     hasNew |= !filter.Contains(child.CardData.Id);
                 child = child.Child;
             }
@@ -63,7 +63,7 @@ namespace GolemAutomation
             var child = MyGameCard.Child;
             while (child != null)
             {
-                if (child.CardData.MyCardType != CardType.Humans)
+                if (child.CardData.MyCardType != CardType.Humans && child.CardData is not Filter)
                 {
                     filter.Add(child.CardData.Id);
                 }

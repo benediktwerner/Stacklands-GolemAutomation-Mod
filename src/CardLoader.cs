@@ -37,6 +37,7 @@ namespace GolemAutomation
                 {
                     card.PickupSoundGroup = PickupSoundGroup.Heavy;
                 }
+                if (c.Init != null) c.Init(card);
                 allCards.Add(card);
             }
 
@@ -61,7 +62,29 @@ namespace GolemAutomation
             new Card(Consts.STORAGE_PLACE, "Storage Place", "Use a filter on it to specify which resources should automatically be placed here\n\nOther buildings can be placed on top", 1, CardType.Structures, typeof(StoragePlace), building: true),
             new Card(Consts.FILTER, "Filter", "List to specify allowed cards", 5, CardType.Resources, typeof(Filter)),
             new Card(Consts.LOCATION_GLYPH, "Location Glyph", "Place building on top to bind", 7, CardType.Resources, typeof(LocationGlyph)),
-            new Card(Consts.GOLEM, "Golem", "Moves cards from one Storage Space to another. Use two Location Glyphs to program.", 7, CardType.Structures, typeof(Golem), building: true),
+            new Card(Consts.GOLEM, "Golem", "Moves cards from one Storage Space to another. Use two Location Glyphs to specify start and end. Use a filter to restrict what it picks up.", 7, CardType.Structures, typeof(Golem), building: true),
+            new Card(Consts.GOLEM_L, "Large Golem", "Slower but can carry 5 cards at once and load more modules", 7, CardType.Structures, typeof(Golem), building: true, init: (c) => {
+                var golem = (Golem)c;
+                golem.BaseSpeedModifier = 2f;
+                golem.SpeedModifier = 2f;
+                golem.CarryingCapacity = 5;
+                golem.ModulesLeft = 4;
+            }),
+            new Card(Consts.GOLEM_XL, "Humongous Golem", "Even slower but can carry 10 cards at once and load even more modules", 7, CardType.Structures, typeof(Golem), building: true, init: (c) => {
+                var golem = (Golem)c;
+                golem.BaseSpeedModifier = 3f;
+                golem.SpeedModifier = 3f;
+                golem.CarryingCapacity = 10;
+                golem.ModulesLeft = 5;
+            }),
+            new Card(Consts.GOLEM_MOD_SELL, "Golem Module: Sell", "Allows the golem to sell stuff", 5, CardType.Resources, typeof(GolemModule), init: (c) =>
+            {
+                ((GolemModule)c).ModType = GolemModuleType.Sell;
+            }),
+            new Card(Consts.GOLEM_MOD_SPEED, "Golem Module: Speed", "Makes the golem work twice as fast", 5, CardType.Resources, typeof(GolemModule), init: (c) =>
+            {
+                ((GolemModule)c).ModType = GolemModuleType.Speed;
+            }),
         };
 
         public static readonly Idea[] Ideas = new[]

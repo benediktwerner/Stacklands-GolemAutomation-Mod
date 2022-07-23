@@ -82,5 +82,20 @@ namespace GolemAutomation
                 RemoveInstructions(3)
                 .InstructionEnumeration();
         }
+
+        [HarmonyPatch(typeof(CardData), nameof(CardData.Name), MethodType.Getter)]
+        [HarmonyPostfix]
+        public static void GolemName(ref string __result, CardData __instance)
+        {
+            if (__instance is Golem g)
+            {
+                if (g.SpeedModules > 0)
+                {
+                    __result += " +" + g.SpeedModules;
+                    if (g.HasSellingModule) __result += "/$";
+                }
+                else if (g.HasSellingModule) __result += " +$";
+            }
+        }
     }
 }
