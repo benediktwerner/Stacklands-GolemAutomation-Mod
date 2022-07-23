@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GolemAutomation
 {
-    class HasFilter : CardData
+    class HasFilter : AnimalPen
     {
         [ExtraData(Consts.PREFIX + "filter")]
         public string filterData = "";

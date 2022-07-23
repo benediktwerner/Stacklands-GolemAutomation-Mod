@@ -4,9 +4,10 @@ using System.Linq;
 
 namespace GolemAutomation
 {
-    class Filter : CardData
+    class Filter : AnimalPen
     {
         public override bool DetermineCanHaveCardsWhenIsRoot => true;
+        public override bool CanHaveCardsWhileHasStatus() => true;
 
         public override bool CanHaveCard(CardData otherCard) => !Card.IsAlive(otherCard) || !filter.Contains(otherCard.Id);
 

@@ -1,8 +1,13 @@
-﻿namespace GolemAutomation
+﻿using UnityEngine;
+
+namespace GolemAutomation
 {
     class LocationGlyph : CardData
     {
-        public override bool CanHaveCard(CardData otherCard) => (MyGameCard.Child == null && otherCard.IsBuilding) || MyGameCard.Child.CardData.Id == Id;
+        public override bool CanHaveCard(CardData otherCard)
+        {
+            return (otherCard.IsBuilding && otherCard is not Golem) || otherCard.Id == Id;
+        }
 
         [ExtraData(Consts.LOCATION_GLYPH + ".target")]
         public string targetId;
