@@ -6,7 +6,7 @@ namespace GolemAutomation
     {
         public override bool CanHaveCard(CardData otherCard)
         {
-            return (otherCard.IsBuilding && otherCard is not Golem) || otherCard.Id == Id;
+            return (otherCard.IsBuilding && otherCard is not Golem) || otherCard.Id == Id || otherCard.MyCardType == CardType.Humans;
         }
 
         [ExtraData(Consts.LOCATION_GLYPH + ".target")]
@@ -39,7 +39,7 @@ namespace GolemAutomation
             if ((WorldManager.instance.HoveredCard == MyGameCard || WorldManager.instance.DraggingCard == MyGameCard) && target != null)
             {
                 target.HighlightRectangle.enabled = true;
-                target.HighlightRectangle.Color = Color.cyan;
+                target.HighlightRectangle.Color = Color.blue;
             }
         }
 
