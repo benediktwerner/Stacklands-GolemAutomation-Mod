@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace GolemAutomation
@@ -67,15 +68,19 @@ namespace GolemAutomation
             if (parent?.CardData.Id == Consts.STORAGE_PLACE) __state = parent;
         }
 
-        [HarmonyPatch(typeof(WorldManager), nameof(WorldManager.Restack))]
-        [HarmonyPostfix]
-        public static void RestackPostfix(List<GameCard> cards, GameCard __state)
+        [HarmonyPatch(typeof(FishTrap), nameof(FishTrap.CompleteFishing))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> SendStackAfterFishing(IEnumerable<CodeInstruction> instructions)
         {
-            if (__state != null)
-            {
-                cards[0].Parent = __state;
-                __state.Child = cards[0];
-            }
+            return new CodeMatcher(instructions)
+                .MatchForward(false,
+                    new CodeMatch(OpCodes.Ldloc_3),
+                    new CodeMatch(OpCodes.Isinst, typeof(Animal)),
+                    new CodeMatch(OpCodes.Brtrue)
+                ).
+                ThrowIfInvalid("Didn't find isAnimal check").
+                RemoveInstructions(3)
+                .InstructionEnumeration();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <AssemblyName>GolemAutomation</AssemblyName>
     <Product>GolemAutomation</Product>
     <Description>Use golems to automate stuff</Description>
