@@ -28,12 +28,12 @@ namespace GolemAutomation
             Init = init;
         }
 
-        public static bool IsAlive(CardData card)
+        public static bool IsAnimal(CardData card)
         {
             return card.MyCardType == CardType.Fish || card.MyCardType == CardType.Mobs;
         }
 
-        public static bool IsAlive(GameCard card) => IsAlive(card.CardData);
+        public static bool IsAlive(GameCard card) => IsAnimal(card.CardData);
 
         public static void Restack(List<GameCard> cards)
         {
@@ -94,6 +94,17 @@ namespace GolemAutomation
                 return goldStack.GetRootCard();
             }
             return null;
+        }
+
+        public static GameCard PopAndGetChild(GameCard card)
+        {
+            var child = card.Child;
+            if (child != null) child.Parent = card.Parent;
+            card.Parent.Child = child;
+            card.Parent = null;
+            card.Child = null;
+            card.SendIt();
+            return child;
         }
 
         public static string Currency => WorldManager.instance.CurrentBoard.Id == "main" ? "gold" : "shell";

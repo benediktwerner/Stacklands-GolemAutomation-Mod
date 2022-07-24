@@ -9,7 +9,7 @@ namespace GolemAutomation
         public override bool DetermineCanHaveCardsWhenIsRoot => true;
         public override bool CanHaveCardsWhileHasStatus() => true;
 
-        public override bool CanHaveCard(CardData otherCard) => !Card.IsAlive(otherCard) || !filter.Contains(otherCard.Id);
+        public override bool CanHaveCard(CardData otherCard) => !Card.IsAnimal(otherCard) || !filter.Contains(otherCard.Id);
 
         [ExtraData(Consts.FILTER + ".filter")]
         public string filterData = "";

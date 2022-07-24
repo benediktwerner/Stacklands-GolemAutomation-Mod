@@ -89,12 +89,7 @@ namespace GolemAutomation
         {
             if (__instance is Golem g)
             {
-                if (g.SpeedModules > 0)
-                {
-                    __result += " +" + g.SpeedModules;
-                    if (g.HasSellingModule) __result += "/$";
-                }
-                else if (g.HasSellingModule) __result += " +$";
+                __result += g.ModulePostfix;
             }
         }
     }

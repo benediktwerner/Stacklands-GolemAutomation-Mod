@@ -77,9 +77,10 @@ namespace GolemAutomation
                 golem.CarryingCapacity = 10;
                 golem.ModulesLeft = 5;
             }),
-            new Card(Consts.GOLEM_MOD_SELL, "Golem Module: Sell", "Allows the golem to sell stuff", 5, CardType.Resources, typeof(GolemModuleSell)),
-            new Card(Consts.GOLEM_MOD_SPEED, "Golem Module: Speed", "Makes the golem work twice as fast", 5, CardType.Resources, typeof(GolemModuleSpeed)),
-            new Card(Consts.GOLEM_MOD_COUNTER, "Golem Module: Counter", "Allows the golem to count.\n\nPlace coins on it to increase the count. Use a villager to reset it.", 5, CardType.Resources, typeof(GolemModuleCounter)),
+            new Card(Consts.GOLEM_MOD_SELL, "Sell Module", "Allows the golem to sell stuff", 5, CardType.Resources, typeof(GolemModuleSell)),
+            new Card(Consts.GOLEM_MOD_SPEED, "Speed Module", "Makes the golem work twice as fast", 5, CardType.Resources, typeof(GolemModuleSpeed)),
+            new Card(Consts.GOLEM_MOD_COUNTER, "Counter Module", "Allows the golem to count.\n\nPlace coins on it to increase the count. Use a villager to reset it.", 5, CardType.Resources, typeof(GolemModuleCounter)),
+            new Card(Consts.GOLEM_MOD_CRAFTER, "Crafter Module", "Allows the golem to craft a recepie.\n\nPlace recepie on top to configure.", 5, CardType.Resources, typeof(GolemModuleCrafter)),
         };
 
         public static readonly Idea[] Ideas = new[]

@@ -15,6 +15,7 @@
         public const string GOLEM_MOD_SELL = GOLEM + "_module_sell";
         public const string GOLEM_MOD_SPEED = GOLEM + "_module_speed";
         public const string GOLEM_MOD_COUNTER  = GOLEM + "_module_counter";
+        public const string GOLEM_MOD_CRAFTER  = GOLEM + "_module_crafter";
 
         public const string SUGAR = "sugar";
         public const string STICK = "stick";

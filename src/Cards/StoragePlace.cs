@@ -9,7 +9,7 @@
             if (MyGameCard.Child != null)
                 return MyGameCard.Child.CardData.CanHaveCard(otherCard);
 
-            return !Card.IsAlive(otherCard);
+            return !Card.IsAnimal(otherCard);
         }
     }
 }

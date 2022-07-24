@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace GolemAutomation
@@ -19,28 +21,44 @@ namespace GolemAutomation
 
         [ExtraData(Consts.GOLEM + ".selling_module")]
         public int SellingModules = 0;
-
-        private bool _hasSellingModule = false;
         public bool HasSellingModule {
-            get => _hasSellingModule;
-            set {
-                _hasSellingModule = value;
-                SellingModules = value ? 1 : 0;
-            }
+            get => SellingModules > 0;
+            set => SellingModules = value ? 1 : 0;
         }
+
+        [ExtraData(Consts.GOLEM + ".crafting_recipe")]
+        public string CraftingRecipe = "";
+        public bool HasRecipe => CraftingRecipe.Length > 0;
 
         public int CarryingCapacity = 1;
         public int ModulesLeft = 2;
+        public string ModulePostfix = "";
 
         public new void Start()
         {
-            _hasSellingModule = SellingModules > 0;
+            UpdateModulePostfix();
             UpdateDescription();
+        }
+
+        public void UpdateModulePostfix()
+        {
+            var modules = new List<string>();
+            if (SpeedModules > 0) modules.Add(SpeedModules.ToString());
+            if (HasSellingModule) modules.Add("$");
+            if (HasRecipe) modules.Add("C");
+            if (modules.Count > 0) ModulePostfix = " +" + string.Join("/", modules);
+            else ModulePostfix = "";
         }
 
         public override void UpdateDescription()
         {
-            base.UpdateDescription();
+            if (HasRecipe)
+            {
+                var array = CraftingRecipe.Split(',').Select(x => WorldManager.instance.GameDataLoader.GetCardFromId(x).Name).ToArray();
+                Array.Sort(array);
+                descriptionOverride = "Recipe: " + string.Join(", ", array);
+            }
+            else base.UpdateDescription();
             if (Counter > 0)
             {
                 var s = "Counter: " + Counter;
@@ -271,20 +289,59 @@ namespace GolemAutomation
             }
         }
 
+        public bool Craft(GameCard card)
+        {
+            if (card == null) return false;
+            var parent = card.Parent;
+            var leftover = new List<GameCard>();
+            var craft = new List<GameCard>();
+            var recipe = CraftingRecipeDict();
+            var recipeCount = recipe.Values.Sum();
+            do
+            {
+                if (recipe.TryGetValue(card.CardData.Id, out int c))
+                {
+                    if (c > 0)
+                    {
+                        recipe[card.CardData.Id]--;
+                        craft.Add(card);
+                    }
+                    else leftover.Add(card);
+                    card = card.Child;
+                }
+                else
+                {
+                    card = Card.PopAndGetChild(card);
+                }
+            } while (card != null);
+            if (craft.Count == recipeCount)
+            {
+                Card.Restack(craft);
+                craft[0].SendIt();
+                Card.Restack(leftover);
+                if (leftover.Count > 0) Card.Parent(parent, leftover[0]);
+                else parent.Child = null;
+                return true;
+            }
+            return false;
+        }
+
+        public Dictionary<string, int> CraftingRecipeDict()
+        {
+            var recipe = new Dictionary<string, int>();
+            foreach (var id in CraftingRecipe.Split(','))
+            {
+                recipe.TryGetValue(id, out int c);
+                recipe[id] = c + 1;
+            }
+            return recipe;
+        }
+
         public static void PopAnimals(GameCard card)
         {
             while (card != null)
             {
-                if (Card.IsAlive(card))
-                {
-                    var nxt = card.Child;
-                    if (card.Child != null) card.Child.Parent = card.Parent;
-                    card.Parent.Child = card.Child;
-                    card.Parent = null;
-                    card.Child = null;
-                    card.SendIt();
-                    card = nxt;
-                }
+                if (Card.IsAlive(card)) card = Card.PopAndGetChild(card);
                 else card = card.Child;
             }
         }
@@ -299,7 +356,11 @@ namespace GolemAutomation
                     var card = g2.MyGameCard.Child;
                     if (card != null)
                     {
-                        if (g2.target != null && g2.target.MyBoard.IsCurrent)
+                        if (HasRecipe)
+                        {
+                            if (Craft(card)) return;
+                        }
+                        else if (g2.target != null && g2.target.MyBoard.IsCurrent)
                         {
                             var targetRoot = g2.target.GetRootCard();
                             var spaceLeft = targetRoot.CardData is Chest ? 30 : 29 - targetRoot.GetChildCount();
@@ -325,6 +386,10 @@ namespace GolemAutomation
                         }
                     }
                 }
+                else if (HasRecipe)
+                {
+                    if (Craft(g1.MyGameCard.Child)) return;
+                }
                 else if (HasSellingModule)
                 {
                     if (PopGoldAndSell(g1.MyGameCard.Child)) return;
@@ -344,19 +409,26 @@ namespace GolemAutomation
                         if (take <= 0) return;
                         if (take < spaceLeft) spaceLeft = take;
                     }
+                    var recipeDict = HasRecipe ? CraftingRecipeDict() : null;
                     while (jumpTarget.Child != null)
                     {
                         jumpTarget = jumpTarget.Child;
                         spaceLeft--;
+                        if (recipeDict != null && recipeDict.TryGetValue(jumpTarget.CardData.Id, out int c) && c > 0)
+                        {
+                            recipeDict[jumpTarget.CardData.Id]--;
+                        }
                     }
                     if (spaceLeft <= 0) return;
                     var card = g1.target.GetLeafCard();
                     var move = new List<GameCard>();
                     var leftover = new List<GameCard>();
-                    while (card != g1.target && spaceLeft-- > 0)
+                    while (card != g1.target && spaceLeft > 0)
                     {
-                        if ((filter.Count == 0 || filter.Contains(card.CardData.Id)) && (!HasSellingModule || card.CardData.Value != -1))
+                        if ((recipeDict == null || recipeDict.TryGetValue(card.CardData.Id, out var c) && c > 0) && ((filter.Count == 0 || filter.Contains(card.CardData.Id)) && (!HasSellingModule || card.CardData.Value != -1)))
                         {
+                            if (recipeDict != null) recipeDict[card.CardData.Id]--;
+                            spaceLeft--;
                             move.Add(card);
                         }
                         else leftover.Add(card);
@@ -385,7 +457,7 @@ namespace GolemAutomation
                 ModulesLeft--;
                 g.Insert(this);
                 DestroyChildrenMatchingPredicateAndRestack(c => g, 1);
-                AudioManager.me.PlaySound2D(AudioManager.me.CardDestroy, Random.Range(0.8f, 1.2f), 0.3f);
+                AudioManager.me.PlaySound2D(AudioManager.me.CardDestroy, UnityEngine.Random.Range(0.8f, 1.2f), 0.3f);
                 UpdateDescription();
             }
         }
@@ -404,11 +476,17 @@ namespace GolemAutomation
             }
             if (Counter > 0)
             {
-                var card = (GolemModuleCounter) WorldManager.instance.CreateCard(transform.position, Consts.GOLEM_MOD_COUNTER, checkAddToStack: false);
+                var card = (GolemModuleCounter)WorldManager.instance.CreateCard(transform.position, Consts.GOLEM_MOD_COUNTER, checkAddToStack: false);
                 card.Counter = Counter;
                 card.UpdateDescription();
                 removed.Add(card.MyGameCard);
-
+            }
+            if (HasRecipe)
+            {
+                var card = (GolemModuleCrafter)WorldManager.instance.CreateCard(transform.position, Consts.GOLEM_MOD_CRAFTER, checkAddToStack: false);
+                card.Recipe = CraftingRecipe;
+                card.UpdateDescription();
+                removed.Add(card.MyGameCard);
             }
             if (removed.Count > 0)
             {
@@ -420,6 +498,7 @@ namespace GolemAutomation
             SpeedModules = 0;
             SpeedModifier = BaseSpeedModifier;
             Counter = 0;
+            CraftingRecipe = "";
             UpdateDescription();
         }
     }
