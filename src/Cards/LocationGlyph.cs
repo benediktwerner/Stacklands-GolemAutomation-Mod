@@ -21,6 +21,7 @@ namespace GolemAutomation
                 UpdateDescription();
             }
         }
+
         public override void UpdateCard()
         {
             if (MyGameCard.Parent == null && MyGameCard.Child != null && target != MyGameCard.Child && MyGameCard.Child.CardData.Id != Id)

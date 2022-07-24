@@ -14,6 +14,9 @@ namespace GolemAutomation
         public float SpeedModifier = 1f;
         public float BaseSpeedModifier = 1f;
 
+        [ExtraData(Consts.GOLEM + ".counter")]
+        public int Counter = 0;
+
         [ExtraData(Consts.GOLEM + ".selling_module")]
         public int SellingModules = 0;
 
@@ -32,6 +35,18 @@ namespace GolemAutomation
         public new void Start()
         {
             _hasSellingModule = SellingModules > 0;
+            UpdateDescription();
+        }
+
+        public override void UpdateDescription()
+        {
+            base.UpdateDescription();
+            if (Counter > 0)
+            {
+                var s = "Counter: " + Counter;
+                if (descriptionOverride == null) descriptionOverride = s;
+                else descriptionOverride += "\n\n" + s;
+            }
         }
 
         public override bool CanHaveCard(CardData otherCard)
@@ -62,7 +77,7 @@ namespace GolemAutomation
 
         public override void UpdateCard()
         {
-            if (!TryStartAction())
+            if (!TryStartAction() && MyGameCard.TimerRunning)
             {
                 MyGameCard.CancelTimer(GetActionId(nameof(Work)));
                 MyGameCard.CancelTimer(GetActionId(nameof(RemoveModules)));
@@ -77,7 +92,7 @@ namespace GolemAutomation
             if (child == null) return false;
             if (child.MyCardType == CardType.Humans)
             {
-                if (SpeedModules > 0 || HasSellingModule)
+                if (SpeedModules > 0 || HasSellingModule || Counter > 0)
                 {
                     MyGameCard.StartTimer(10f, new TimerAction(RemoveModules), "Removing module", GetActionId(nameof(RemoveModules)));
                     return true;
@@ -323,6 +338,12 @@ namespace GolemAutomation
                 {
                     var spaceLeft = CarryingCapacity;
                     var jumpTarget = g2 == null ? g1.MyGameCard : g2.MyGameCard;
+                    if (Counter > 0)
+                    {
+                        var take = g1.target.GetChildCount() - Counter;
+                        if (take <= 0) return;
+                        if (take < spaceLeft) spaceLeft = take;
+                    }
                     while (jumpTarget.Child != null)
                     {
                         jumpTarget = jumpTarget.Child;
@@ -365,6 +386,7 @@ namespace GolemAutomation
                 g.Insert(this);
                 DestroyChildrenMatchingPredicateAndRestack(c => g, 1);
                 AudioManager.me.PlaySound2D(AudioManager.me.CardDestroy, Random.Range(0.8f, 1.2f), 0.3f);
+                UpdateDescription();
             }
         }
 
@@ -374,24 +396,31 @@ namespace GolemAutomation
             var removed = new List<GameCard>();
             if (HasSellingModule)
             {
-                HasSellingModule = false;
-                var card = WorldManager.instance.CreateCard(transform.position, Consts.GOLEM_MOD_SELL, checkAddToStack: false);
-                removed.Add(card.MyGameCard);
-                ModulesLeft++;
+                removed.Add(WorldManager.instance.CreateCard(transform.position, Consts.GOLEM_MOD_SELL, checkAddToStack: false).MyGameCard);
             }
             for (var i = 0; i < SpeedModules; i++)
             {
-                var card = WorldManager.instance.CreateCard(transform.position, Consts.GOLEM_MOD_SPEED, checkAddToStack: false);
+                removed.Add(WorldManager.instance.CreateCard(transform.position, Consts.GOLEM_MOD_SPEED, checkAddToStack: false).MyGameCard);
+            }
+            if (Counter > 0)
+            {
+                var card = (GolemModuleCounter) WorldManager.instance.CreateCard(transform.position, Consts.GOLEM_MOD_COUNTER, checkAddToStack: false);
+                card.Counter = Counter;
+                card.UpdateDescription();
                 removed.Add(card.MyGameCard);
-                ModulesLeft++;
+
             }
             if (removed.Count > 0)
             {
+                ModulesLeft += removed.Count;
                 Card.Restack(removed);
                 WorldManager.instance.StackSend(removed[0]);
             }
+            HasSellingModule = false;
             SpeedModules = 0;
             SpeedModifier = BaseSpeedModifier;
+            Counter = 0;
+            UpdateDescription();
         }
     }
 }
