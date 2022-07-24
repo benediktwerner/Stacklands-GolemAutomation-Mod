@@ -4,7 +4,7 @@
     {
         public override bool CanHaveCard(CardData otherCard)
         {
-            return base.CanHaveCard(otherCard) || otherCard.Id == Card.Currency || otherCard is Villager;
+            return base.CanHaveCard(otherCard) || otherCard.Id == Card.Currency;
         }
 
         public override bool CanInsert(Golem g) => Counter > 0 && g.Counter == 0;
@@ -23,7 +23,7 @@
 
         public override void UpdateCard()
         {
-            if (MyGameCard.Child?.CardData.Id == Card.Currency)
+            if (MyGameCard.Child?.CardData.Id == Card.Currency && MyGameCard.GetChildCount() != Counter)
             {
                 MyGameCard.StartTimer(10f, new TimerAction(IncreaseCount), "Increasing count", GetActionId(nameof(IncreaseCount)));
             }
@@ -37,14 +37,7 @@
         [TimedAction(Consts.GOLEM_MOD_COUNTER + ".increase_count")]
         public void IncreaseCount()
         {
-            var child = MyGameCard.Child;
-            var currency = Card.Currency;
-            while (child != null)
-            {
-                if (child.CardData.Id == currency) Counter++;
-                child = child.Child;
-            }
-            DestroyChildrenMatchingPredicateAndRestack(c => c.Id == currency, 100);
+            Counter = MyGameCard.GetChildCount();
             UpdateDescription();
         }
 
