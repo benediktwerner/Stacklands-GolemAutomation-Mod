@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace GolemAutomation
@@ -35,6 +34,28 @@ namespace GolemAutomation
             ScriptType = scriptType ?? typeof(CardData);
             IsBuilding = building;
             Init = init;
+        }
+
+        public static Card Create<T>(
+            string id,
+            string name,
+            string description,
+            int value,
+            CardType cardType,
+            bool building = false,
+            Action<T> init = null
+        ) where T : CardData
+        {
+            return new Card(
+                id,
+                name,
+                description,
+                value,
+                cardType,
+                typeof(T),
+                building,
+                init == null ? null : (c) => init((T)c)
+            );
         }
 
         public static bool IsAnimal(CardData card)
@@ -125,6 +146,6 @@ namespace GolemAutomation
         }
 
         public static string Currency =>
-            WorldManager.instance.CurrentBoard.Id == "main" ? "gold" : "shell";
+            WorldManager.instance.CurrentBoard.Id == Consts.MAINLAND ? Consts.COIN : Consts.SHELL;
     }
 }

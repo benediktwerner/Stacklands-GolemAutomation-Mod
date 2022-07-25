@@ -106,5 +106,38 @@ namespace GolemAutomation
                 __result += g.ModulePostfix;
             }
         }
+
+        [HarmonyPatch(typeof(GameScreen), nameof(GameScreen.GetBlueprintGroupText))]
+        [HarmonyPrefix]
+        public static void GolemBlueprintGroupText(
+            BlueprintGroup group,
+            ref string __result,
+            out bool __runOriginal
+        )
+        {
+            if (group == Consts.BLUEPRINT_GROUP_GOLEM)
+            {
+                __result = "Golems";
+                __runOriginal = false;
+            }
+            else
+                __runOriginal = true;
+        }
+
+        [HarmonyPatch(typeof(GameScreen), MethodType.Constructor)]
+        [HarmonyPostfix]
+        public static void GolemBlueprintGroup(GameScreen __instance)
+        {
+            __instance.groups.Add(Consts.BLUEPRINT_GROUP_GOLEM);
+        }
+
+        [HarmonyPatch(typeof(GameDataLoader), MethodType.Constructor)]
+        [HarmonyPostfix]
+        public static void CrashedSpaceshipInJungle(GameDataLoader __instance)
+        {
+            ((Harvestable)__instance.idToCard[Consts.JUNGLE]).MyCardBag.Chances.Add(
+                new CardChance { Id = Consts.CRASHED_SPACESHIP, Chance = 1 }
+            );
+        }
     }
 }

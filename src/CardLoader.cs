@@ -53,112 +53,255 @@ namespace GolemAutomation
                 card.MyCardType = CardType.Ideas;
                 card.BlueprintGroup = idea.Group;
                 card.Subprints = idea.Subprints;
+                card.NeedsExactMatch = idea.NeedsExactMatch;
                 allCards.Add(card);
             }
         }
 
         public static readonly Card[] Cards = new[]
         {
-            new Card(Consts.PAPER, "Paper", "This is paper", 5, CardType.Resources),
-            new Card(
+            Card.Create<Resource>(Consts.PAPER, "Paper", "This is paper", 5, CardType.Resources),
+            Card.Create<StoragePlace>(
                 Consts.STORAGE_PLACE,
                 "Storage Place",
                 "Use a filter on it to specify which resources should automatically be placed here\n\nOther buildings can be placed on top",
                 1,
                 CardType.Structures,
-                typeof(StoragePlace),
                 building: true
             ),
-            new Card(
+            Card.Create<Filter>(
                 Consts.FILTER,
                 "Filter",
                 "Specifies allowed cards",
                 5,
-                CardType.Resources,
-                typeof(Filter)
+                CardType.Resources
             ),
-            new Card(
+            Card.Create<LocationGlyph>(
                 Consts.LOCATION_GLYPH,
                 "Location Glyph",
                 "Place building on top to bind",
                 7,
-                CardType.Resources,
-                typeof(LocationGlyph)
+                CardType.Resources
             ),
-            new Card(
+            Card.Create<Harvestable>(
+                Consts.CRASHED_SPACESHIP,
+                "Crashed Spaceship",
+                "How did this end up here?",
+                5,
+                CardType.Locations,
+                init: (c) =>
+                {
+                    c.IsUnlimited = true;
+                    c.HarvestTime = 30f;
+                    c.MyCardBag = new CardBag
+                    {
+                        CardBagType = CardBagType.Chances,
+                        Chances = new List<CardChance>
+                        {
+                            new CardChance { Id = Consts.IRON_BAR, Chance = 5 },
+                            new CardChance { Id = Consts.GOLD_BAR, Chance = 5 },
+                            new CardChance { Id = Consts.GLASS, Chance = 3 },
+                            new CardChance { Id = Consts.ENERGY_CORE, Chance = 3 },
+                            new CardChance { Id = Consts.BROKEN_GOLEM, Chance = 3 },
+                            new CardChance { Id = Consts.BROKEN_GOLEM_XL, Chance = 1 },
+                            new CardChance { Id = Consts.ENERGY_COMBOBULATOR, Chance = 1 }
+                        }
+                    };
+
+                    const string statusTerm = Consts.CRASHED_SPACESHIP + ".status";
+                    c.StatusTerm = statusTerm;
+                    AddTranslation(statusTerm, "Exploring spaceship");
+                }
+            ),
+            Card.Create<HarvestableWithIdea>(
+                Consts.BROKEN_GOLEM,
+                "Broken Golem",
+                "Human shaped pile of iron and gold. But why does it glow blue?",
+                3,
+                CardType.Locations,
+                init: (c) =>
+                {
+                    c.Amount = 3;
+                    c.HarvestTime = 15f;
+                    c.MyCardBag = new CardBag
+                    {
+                        CardBagType = CardBagType.Chances,
+                        Chances = new List<CardChance>
+                        {
+                            new CardChance { Id = Consts.IRON_BAR, Chance = 2 },
+                            new CardChance { Id = Consts.GOLD_BAR, Chance = 2 },
+                            new CardChance { Id = Consts.GLASS, Chance = 2 },
+                            new CardChance { Id = Consts.ENERGY_CORE, Chance = 1 },
+                            new CardChance { Id = Consts.LOCATION_GLYPH, Chance = 2 },
+                            new CardChance { Id = Consts.GOLEM_MOD, Chance = 1 },
+                        }
+                    };
+                    c.IdeaDrops = new[]
+                    {
+                        Consts.Idea(Consts.GOLEM),
+                        Consts.Idea(Consts.LOCATION_GLYPH),
+                        Consts.Idea(Consts.ENERGY_COMBOBULATOR),
+                        Consts.Idea(Consts.ENERGY_CORE),
+                        Consts.Idea(Consts.GOLEM_MOD),
+                        Consts.Idea(Consts.GOLEM_MOD_SPEED),
+                        Consts.Idea(Consts.GOLEM_MOD_SELL),
+                        Consts.Idea(Consts.GOLEM_MOD_COUNTER),
+                        Consts.Idea(Consts.GOLEM_MOD_CRAFTER),
+                        Consts.Idea(Consts.GOLEM_L),
+                    };
+
+                    const string statusTerm = Consts.CRASHED_SPACESHIP + ".status";
+                    c.StatusTerm = statusTerm;
+                    AddTranslation(statusTerm, "Dismantling broken golem");
+                }
+            ),
+            Card.Create<HarvestableWithIdea>(
+                Consts.BROKEN_GOLEM_XL,
+                "Humongous Broken Golem",
+                "House-sized pile of iron, gold, and energy",
+                5,
+                CardType.Locations,
+                init: (c) =>
+                {
+                    c.Amount = 10;
+                    c.HarvestTime = 30f;
+                    c.MyCardBag = new CardBag
+                    {
+                        CardBagType = CardBagType.Chances,
+                        Chances = new List<CardChance>
+                        {
+                            new CardChance { Id = Consts.IRON_BAR, Chance = 10 },
+                            new CardChance { Id = Consts.GOLD_BAR, Chance = 10 },
+                            new CardChance { Id = Consts.GLASS, Chance = 5 },
+                            new CardChance { Id = Consts.ENERGY_CORE, Chance = 3 },
+                            new CardChance { Id = Consts.LOCATION_GLYPH, Chance = 3 },
+                            new CardChance { Id = Consts.GOLEM_MOD, Chance = 1 },
+                            new CardChance { Id = Consts.GOLEM_XL_LEFT_ARM, Chance = 1 },
+                            new CardChance { Id = Consts.GOLEM_XL_RIGHT_ARM, Chance = 1 },
+                            new CardChance { Id = Consts.GOLEM_XL_LEGS, Chance = 1 },
+                        }
+                    };
+                    c.IdeaDrops = new[]
+                    {
+                        Consts.Idea(Consts.GOLEM_XL),
+                        Consts.Idea(Consts.GOLEM_XL_LEFT_ARM),
+                        Consts.Idea(Consts.GOLEM_XL_RIGHT_ARM),
+                        Consts.Idea(Consts.GOLEM_XL_LEGS),
+                    };
+
+                    const string statusTerm = Consts.CRASHED_SPACESHIP + ".status";
+                    c.StatusTerm = statusTerm;
+                    AddTranslation(statusTerm, "Dismantling broken golem");
+                }
+            ),
+            Card.Create<Resource>(
+                Consts.ENERGY_COMBOBULATOR,
+                "Energy Combobulator",
+                "Combobulates energy into golem cores",
+                30,
+                CardType.Structures,
+                building: true
+            ),
+            Card.Create<Resource>(
+                Consts.ENERGY_CORE,
+                "Energy Core",
+                "Core building block of every golem",
+                10,
+                CardType.Resources
+            ),
+            Card.Create<Resource>(
+                Consts.GOLEM_XL_LEFT_ARM,
+                "Humongous Left Arm",
+                "Building block for a humongous golem",
+                30,
+                CardType.Resources
+            ),
+            Card.Create<Resource>(
+                Consts.GOLEM_XL_RIGHT_ARM,
+                "Humongous Right Arm",
+                "Building block for a humongous golem",
+                30,
+                CardType.Resources
+            ),
+            Card.Create<Resource>(
+                Consts.GOLEM_XL_LEGS,
+                "Humongous Legs",
+                "Building block for a humongous golem",
+                30,
+                CardType.Resources
+            ),
+            Card.Create<Golem>(
                 Consts.GOLEM,
                 "Golem",
                 "Moves cards from one Storage Space to another. Use two Location Glyphs to specify start and end. Use a filter to restrict what it picks up.",
-                7,
+                20,
                 CardType.Structures,
-                typeof(Golem),
                 building: true
             ),
-            new Card(
+            Card.Create<Golem>(
                 Consts.GOLEM_L,
                 "Large Golem",
                 "Slower but can carry 5 cards at once and load more modules",
-                7,
+                50,
                 CardType.Structures,
-                typeof(Golem),
                 building: true,
-                init: (c) =>
+                init: (golem) =>
                 {
-                    var golem = (Golem)c;
                     golem.BaseSpeedModifier = 2f;
                     golem.SpeedModifier = 2f;
                     golem.CarryingCapacity = 5;
                     golem.ModulesLeft = 4;
                 }
             ),
-            new Card(
+            Card.Create<Golem>(
                 Consts.GOLEM_XL,
                 "Humongous Golem",
                 "Even slower but can carry 10 cards at once and load even more modules",
-                7,
+                150,
                 CardType.Structures,
-                typeof(Golem),
                 building: true,
-                init: (c) =>
+                init: (golem) =>
                 {
-                    var golem = (Golem)c;
                     golem.BaseSpeedModifier = 3f;
                     golem.SpeedModifier = 3f;
                     golem.CarryingCapacity = 10;
                     golem.ModulesLeft = 5;
                 }
             ),
-            new Card(
-                Consts.GOLEM_MOD_SELL,
-                "Sell Module",
-                "Allows the golem to sell stuff",
-                5,
-                CardType.Resources,
-                typeof(GolemModuleSell)
+            Card.Create<Golem>(
+                Consts.GOLEM_MOD,
+                "Golem Module",
+                "Used to craft specific golem modules",
+                10,
+                CardType.Resources
             ),
-            new Card(
+            Card.Create<GolemModuleSell>(
+                Consts.GOLEM_MOD_SELL,
+                "Selling Module",
+                "Allows the golem to sell stuff",
+                15,
+                CardType.Resources
+            ),
+            Card.Create<GolemModuleSpeed>(
                 Consts.GOLEM_MOD_SPEED,
                 "Speed Module",
                 "Makes the golem work twice as fast",
-                5,
-                CardType.Resources,
-                typeof(GolemModuleSpeed)
+                15,
+                CardType.Resources
             ),
-            new Card(
+            Card.Create<GolemModuleCounter>(
                 Consts.GOLEM_MOD_COUNTER,
                 "Counter Module",
                 "Allows the golem to count.\n\nPlace coins on it to set the count.",
-                5,
-                CardType.Resources,
-                typeof(GolemModuleCounter)
+                10,
+                CardType.Resources
             ),
-            new Card(
+            Card.Create<GolemModuleCrafter>(
                 Consts.GOLEM_MOD_CRAFTER,
                 "Crafter Module",
                 "Allows the golem to craft a recepie.\n\nPlace recepie on top to configure.",
-                5,
-                CardType.Resources,
-                typeof(GolemModuleCrafter)
+                20,
+                CardType.Resources
             ),
         };
 
@@ -221,7 +364,7 @@ namespace GolemAutomation
             ),
             new Idea(
                 Consts.LOCATION_GLYPH,
-                BlueprintGroup.Resources,
+                Consts.BLUEPRINT_GROUP_GOLEM,
                 new List<Subprint>
                 {
                     new Subprint
@@ -237,6 +380,289 @@ namespace GolemAutomation
                         ResultCard = Consts.LOCATION_GLYPH,
                         Time = 5.0f,
                         StatusTerm = "Unbinding Glyph",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.ENERGY_COMBOBULATOR,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.BRICK,
+                            Consts.BRICK,
+                            Consts.BRICK,
+                            Consts.IRON_BAR,
+                            Consts.IRON_BAR,
+                            Consts.IRON_BAR,
+                            Consts.GOLD_BAR,
+                            Consts.GOLD_BAR,
+                            Consts.GOLD_BAR,
+                            Consts.GLASS,
+                            Consts.GLASS,
+                            Consts.GLASS,
+                            Consts.PAPER,
+                            Consts.ANY_VILL,
+                            Consts.ANY_VILL
+                        },
+                        ResultCard = Consts.ENERGY_COMBOBULATOR,
+                        Time = 30.0f,
+                        StatusTerm = "Making Energy Combobulator",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.ENERGY_CORE,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.ENERGY_COMBOBULATOR,
+                            Consts.GOLD_BAR,
+                            Consts.GLASS,
+                        },
+                        ResultCard = Consts.ENERGY_CORE,
+                        Time = 10.0f,
+                        StatusTerm = "Making Golem Core",
+                    },
+                },
+                needsExactMatch: false
+            ),
+            new Idea(
+                Consts.GOLEM,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.ENERGY_CORE,
+                            Consts.IRON_BAR,
+                            Consts.GOLD_BAR,
+                            Consts.GLASS,
+                            Consts.ANY_VILL
+                        },
+                        ResultCard = Consts.GOLEM,
+                        Time = 10.0f,
+                        StatusTerm = "Making Golem",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_L,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.ENERGY_CORE,
+                            Consts.ENERGY_CORE,
+                            Consts.ENERGY_CORE,
+                            Consts.IRON_BAR,
+                            Consts.IRON_BAR,
+                            Consts.GOLD_BAR,
+                            Consts.GOLD_BAR,
+                            Consts.GLASS,
+                            Consts.ANY_VILL
+                        },
+                        ResultCard = Consts.GOLEM_L,
+                        Time = 20.0f,
+                        StatusTerm = "Making Large Golem",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_XL,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.ENERGY_CORE,
+                            Consts.ENERGY_CORE,
+                            Consts.ENERGY_CORE,
+                            Consts.GOLEM_XL_LEFT_ARM,
+                            Consts.GOLEM_XL_RIGHT_ARM,
+                            Consts.GOLEM_XL_LEGS,
+                            Consts.IRON_BAR,
+                            Consts.IRON_BAR,
+                            Consts.GOLD_BAR,
+                            Consts.GOLD_BAR,
+                            Consts.GLASS,
+                            Consts.GLASS,
+                            Consts.ANY_VILL
+                        },
+                        ResultCard = Consts.GOLEM_XL,
+                        Time = 30.0f,
+                        StatusTerm = "Making Humongous Golem",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_XL_LEFT_ARM,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.ENERGY_CORE,
+                            Consts.IRON_BAR,
+                            Consts.IRON_BAR,
+                            Consts.IRON_BAR,
+                        },
+                        ResultCard = Consts.GOLEM_XL_LEFT_ARM,
+                        Time = 30.0f,
+                        StatusTerm = "Making Humongous Left Arm",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_XL_RIGHT_ARM,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.ENERGY_CORE,
+                            Consts.GOLD_BAR,
+                            Consts.GOLD_BAR,
+                            Consts.GOLD_BAR,
+                        },
+                        ResultCard = Consts.GOLEM_XL_RIGHT_ARM,
+                        Time = 30.0f,
+                        StatusTerm = "Making Humongous Right Arm",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_XL_LEGS,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.ENERGY_CORE,
+                            Consts.BRICK,
+                            Consts.BRICK,
+                            Consts.BRICK,
+                            Consts.BRICK,
+                        },
+                        ResultCard = Consts.GOLEM_XL_LEGS,
+                        Time = 30.0f,
+                        StatusTerm = "Making Humongous Legs",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_MOD,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[] { Consts.ENERGY_CORE, Consts.PAPER },
+                        ResultCard = Consts.GOLEM_MOD,
+                        Time = 10.0f,
+                        StatusTerm = "Making Golem Module",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_MOD_SELL,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.GOLEM_MOD,
+                            Consts.COIN,
+                            Consts.COIN,
+                            Consts.COIN,
+                            Consts.COIN,
+                            Consts.COIN,
+                            Consts.PLANK,
+                            Consts.PLANK
+                        },
+                        ResultCard = Consts.GOLEM_MOD_SELL,
+                        Time = 10.0f,
+                        StatusTerm = "Making Selling Module",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_MOD_SPEED,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.GOLEM_MOD,
+                            Consts.SUGAR,
+                            Consts.SUGAR,
+                            Consts.SUGAR,
+                            Consts.GOLD_BAR,
+                            Consts.GOLD_BAR
+                        },
+                        ResultCard = Consts.GOLEM_MOD_SPEED,
+                        Time = 10.0f,
+                        StatusTerm = "Making Speed Module",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_MOD_COUNTER,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[] { Consts.GOLEM_MOD, Consts.PAPER, Consts.COIN },
+                        ResultCard = Consts.GOLEM_MOD_COUNTER,
+                        Time = 10.0f,
+                        StatusTerm = "Making Counter Module",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.GOLEM_MOD_CRAFTER,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.GOLEM_MOD,
+                            Consts.BRICK,
+                            Consts.BRICK,
+                            Consts.IRON_BAR,
+                            Consts.IRON_BAR,
+                            Consts.ROPE
+                        },
+                        ResultCard = Consts.GOLEM_MOD_CRAFTER,
+                        Time = 10.0f,
+                        StatusTerm = "Making Crafter Module",
                     },
                 }
             ),
