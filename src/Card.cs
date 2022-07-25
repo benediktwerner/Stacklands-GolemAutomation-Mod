@@ -16,7 +16,16 @@ namespace GolemAutomation
         public readonly bool IsBuilding;
         public readonly Action<CardData> Init;
 
-        public Card(string id, string name, string description, int value, CardType cardType, Type scriptType = null, bool building = false, Action<CardData> init = null)
+        public Card(
+            string id,
+            string name,
+            string description,
+            int value,
+            CardType cardType,
+            Type scriptType = null,
+            bool building = false,
+            Action<CardData> init = null
+        )
         {
             Id = id;
             Name = name;
@@ -37,7 +46,8 @@ namespace GolemAutomation
 
         public static void Restack(List<GameCard> cards)
         {
-            if (cards.Count == 0) return;
+            if (cards.Count == 0)
+                return;
             for (var i = 1; i + 1 < cards.Count; i++)
             {
                 cards[i].Parent = cards[i - 1];
@@ -68,7 +78,8 @@ namespace GolemAutomation
         public static void InsertBelow(GameCard parent, GameCard child)
         {
             var leaf = child.GetLeafCard();
-            if (parent.Child != null) parent.Child.Parent = leaf;
+            if (parent.Child != null)
+                parent.Child.Parent = leaf;
             leaf.Child = parent.Child;
             parent.Child = child;
             child.Parent = parent;
@@ -76,7 +87,8 @@ namespace GolemAutomation
 
         public static GameCard Sell(List<GameCard> cards, Vector3 pos)
         {
-            if (cards.Count == 0) return null;
+            if (cards.Count == 0)
+                return null;
             var value = 0;
             var first = cards[0];
             do
@@ -90,7 +102,11 @@ namespace GolemAutomation
             var goldStack = WorldManager.instance.CreateCardStack(pos, value, Currency, false);
             if (goldStack != null)
             {
-                AudioManager.me.PlaySound2D(AudioManager.me.Coin, UnityEngine.Random.Range(0.8f, 1.2f), 0.8f);
+                AudioManager.me.PlaySound2D(
+                    AudioManager.me.Coin,
+                    UnityEngine.Random.Range(0.8f, 1.2f),
+                    0.8f
+                );
                 return goldStack.GetRootCard();
             }
             return null;
@@ -99,7 +115,8 @@ namespace GolemAutomation
         public static GameCard PopAndGetChild(GameCard card)
         {
             var child = card.Child;
-            if (child != null) child.Parent = card.Parent;
+            if (child != null)
+                child.Parent = card.Parent;
             card.Parent.Child = child;
             card.Parent = null;
             card.Child = null;
@@ -107,6 +124,7 @@ namespace GolemAutomation
             return child;
         }
 
-        public static string Currency => WorldManager.instance.CurrentBoard.Id == "main" ? "gold" : "shell";
+        public static string Currency =>
+            WorldManager.instance.CurrentBoard.Id == "main" ? "gold" : "shell";
     }
 }

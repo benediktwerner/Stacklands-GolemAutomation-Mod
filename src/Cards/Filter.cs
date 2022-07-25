@@ -7,9 +7,11 @@ namespace GolemAutomation
     class Filter : AnimalPen
     {
         public override bool DetermineCanHaveCardsWhenIsRoot => true;
+
         public override bool CanHaveCardsWhileHasStatus() => true;
 
-        public override bool CanHaveCard(CardData otherCard) => !Card.IsAnimal(otherCard) || !filter.Contains(otherCard.Id);
+        public override bool CanHaveCard(CardData otherCard) =>
+            !Card.IsAnimal(otherCard) || !filter.Contains(otherCard.Id);
 
         [ExtraData(Consts.FILTER + ".filter")]
         public string filterData = "";
@@ -19,7 +21,11 @@ namespace GolemAutomation
         {
             if (!string.IsNullOrWhiteSpace(filterData))
             {
-                filter = new HashSet<string>(filterData.Split(',').Where(x => WorldManager.instance.GameDataLoader.idToCard.ContainsKey(x)));
+                filter = new HashSet<string>(
+                    filterData
+                        .Split(',')
+                        .Where(x => WorldManager.instance.GameDataLoader.idToCard.ContainsKey(x))
+                );
                 UpdateDescription();
             }
         }
@@ -28,7 +34,12 @@ namespace GolemAutomation
         {
             if (MyGameCard.Parent == null && CanStartAction())
             {
-                MyGameCard.StartTimer(1f, new TimerAction(AddFilter), "Adding to filter", GetActionId(nameof(AddFilter)));
+                MyGameCard.StartTimer(
+                    1f,
+                    new TimerAction(AddFilter),
+                    "Adding to filter",
+                    GetActionId(nameof(AddFilter))
+                );
             }
             else
             {
@@ -39,7 +50,9 @@ namespace GolemAutomation
 
         public void UpdateDescription()
         {
-            var array = filter.Select(x => WorldManager.instance.GameDataLoader.GetCardFromId(x).Name).ToArray();
+            var array = filter
+                .Select(x => WorldManager.instance.GameDataLoader.GetCardFromId(x).Name)
+                .ToArray();
             Array.Sort(array);
             descriptionOverride = string.Join(", ", array) + "\n\n" + "Use a villager to clear";
         }

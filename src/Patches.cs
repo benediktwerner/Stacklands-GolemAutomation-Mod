@@ -24,12 +24,20 @@ namespace GolemAutomation
 
             foreach (var card in __instance.AllCards)
             {
-                if (card.MyBoard.IsCurrent && card.CardData is StoragePlace f && card.Parent == null)
+                if (
+                    card.MyBoard.IsCurrent && card.CardData is StoragePlace f && card.Parent == null
+                )
                 {
                     Vector3 vec = card.transform.position - myCard.transform.position;
                     vec.y = 0f;
                     var dist = vec.sqrMagnitude;
-                    if (dist <= 9f && dist < minDist && !card.BeingDragged && f.filter.Contains(myCard.CardData.Id) && CanAutoStack(card, myCard))
+                    if (
+                        dist <= 9f
+                        && dist < minDist
+                        && !card.BeingDragged
+                        && f.filter.Contains(myCard.CardData.Id)
+                        && CanAutoStack(card, myCard)
+                    )
                     {
                         target = card;
                         minDist = dist;
@@ -52,7 +60,8 @@ namespace GolemAutomation
             var child = filter;
             while (child.Child != null)
             {
-                if (child.Child == newCard) return false;
+                if (child.Child == newCard)
+                    return false;
                 child = child.Child;
             }
             return child == filter || child.CardData.CanHaveCardOnTop(newCard.CardData);
@@ -63,23 +72,28 @@ namespace GolemAutomation
         public static void RestackPrefix(List<GameCard> cards, out GameCard __state)
         {
             __state = null;
-            if (cards.Count == 0) return;
+            if (cards.Count == 0)
+                return;
             var parent = cards[0].Parent;
-            if (parent?.CardData.Id == Consts.STORAGE_PLACE) __state = parent;
+            if (parent?.CardData.Id == Consts.STORAGE_PLACE)
+                __state = parent;
         }
 
         [HarmonyPatch(typeof(FishTrap), nameof(FishTrap.CompleteFishing))]
         [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> SendStackAfterFishing(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> SendStackAfterFishing(
+            IEnumerable<CodeInstruction> instructions
+        )
         {
             return new CodeMatcher(instructions)
-                .MatchForward(false,
+                .MatchForward(
+                    false,
                     new CodeMatch(OpCodes.Ldloc_3),
                     new CodeMatch(OpCodes.Isinst, typeof(Animal)),
                     new CodeMatch(OpCodes.Brtrue)
-                ).
-                ThrowIfInvalid("Didn't find isAnimal check").
-                RemoveInstructions(3)
+                )
+                .ThrowIfInvalid("Didn't find isAnimal check")
+                .RemoveInstructions(3)
                 .InstructionEnumeration();
         }
 

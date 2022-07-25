@@ -14,7 +14,11 @@ namespace GolemAutomation
         {
             if (!string.IsNullOrWhiteSpace(filterData))
             {
-                filter = new HashSet<string>(filterData.Split(',').Where(x => WorldManager.instance.GameDataLoader.idToCard.ContainsKey(x)));
+                filter = new HashSet<string>(
+                    filterData
+                        .Split(',')
+                        .Where(x => WorldManager.instance.GameDataLoader.idToCard.ContainsKey(x))
+                );
                 UpdateDescription();
             }
         }
@@ -23,9 +27,15 @@ namespace GolemAutomation
         {
             if (filter.Count > 0)
             {
-                var array = filter.Select(x => WorldManager.instance.GameDataLoader.GetCardFromId(x).Name).ToArray();
+                var array = filter
+                    .Select(x => WorldManager.instance.GameDataLoader.GetCardFromId(x).Name)
+                    .ToArray();
                 Array.Sort(array);
-                descriptionOverride = "Filter: " + string.Join(", ", array) + "\n\n" + "Use a different filter to override";
+                descriptionOverride =
+                    "Filter: "
+                    + string.Join(", ", array)
+                    + "\n\n"
+                    + "Use a different filter to override";
             }
             else
             {
@@ -35,9 +45,18 @@ namespace GolemAutomation
 
         public override void UpdateCard()
         {
-            if (MyGameCard.Parent == null && MyGameCard.Child?.CardData is Filter f && !f.filter.SetEquals(filter))
+            if (
+                MyGameCard.Parent == null
+                && MyGameCard.Child?.CardData is Filter f
+                && !f.filter.SetEquals(filter)
+            )
             {
-                MyGameCard.StartTimer(1f, new TimerAction(UpdateFilter), "Applying filter", GetActionId(nameof(UpdateFilter)));
+                MyGameCard.StartTimer(
+                    1f,
+                    new TimerAction(UpdateFilter),
+                    "Applying filter",
+                    GetActionId(nameof(UpdateFilter))
+                );
             }
             else
             {

@@ -8,6 +8,7 @@
         }
 
         public override bool CanInsert(Golem g) => Counter > 0 && g.Counter == 0;
+
         public override void Insert(Golem g)
         {
             g.Counter = Counter;
@@ -23,9 +24,17 @@
 
         public override void UpdateCard()
         {
-            if (MyGameCard.Child?.CardData.Id == Card.Currency && MyGameCard.GetChildCount() != Counter)
+            if (
+                MyGameCard.Child?.CardData.Id == Card.Currency
+                && MyGameCard.GetChildCount() != Counter
+            )
             {
-                MyGameCard.StartTimer(10f, new TimerAction(IncreaseCount), "Increasing count", GetActionId(nameof(IncreaseCount)));
+                MyGameCard.StartTimer(
+                    10f,
+                    new TimerAction(IncreaseCount),
+                    "Increasing count",
+                    GetActionId(nameof(IncreaseCount))
+                );
             }
             else if (MyGameCard.TimerRunning)
             {
