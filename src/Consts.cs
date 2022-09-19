@@ -39,6 +39,7 @@
         public const string SHELL = "shell";
         public const string JUNGLE = "jungle";
         public const string ANY_VILL = "any_villager";
+        public const string OLD_TOME = "old_tome";
 
         public const string MAINLAND = "main";
 

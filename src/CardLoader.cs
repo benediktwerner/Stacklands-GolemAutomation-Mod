@@ -318,6 +318,37 @@ namespace GolemAutomation
                         ResultCard = Consts.PAPER,
                         Time = 10.0f,
                         StatusTerm = "Making Paper",
+                    },
+                    new Subprint
+                    {
+                        RequiredCards = new[]
+                        {
+                            Consts.OLD_TOME,
+                            Consts.ENERGY_CORE,
+                            Consts.ANY_VILL
+                        },
+                        ResultCard = Consts.Idea(Consts.PAPER),
+                        ExtraResultCards = new[]
+                        {
+                            Consts.Idea(Consts.STORAGE_PLACE),
+                            Consts.Idea(Consts.FILTER),
+                            Consts.Idea(Consts.LOCATION_GLYPH),
+                            Consts.Idea(Consts.ENERGY_COMBOBULATOR),
+                            Consts.Idea(Consts.ENERGY_CORE),
+                            Consts.Idea(Consts.GOLEM),
+                            Consts.Idea(Consts.GOLEM_L),
+                            Consts.Idea(Consts.GOLEM_XL),
+                            Consts.Idea(Consts.GOLEM_XL_LEFT_ARM),
+                            Consts.Idea(Consts.GOLEM_XL_RIGHT_ARM),
+                            Consts.Idea(Consts.GOLEM_XL_LEGS),
+                            Consts.Idea(Consts.GOLEM_MOD),
+                            Consts.Idea(Consts.GOLEM_MOD_SELL),
+                            Consts.Idea(Consts.GOLEM_MOD_SPEED),
+                            Consts.Idea(Consts.GOLEM_MOD_COUNTER),
+                            Consts.Idea(Consts.GOLEM_MOD_CRAFTER),
+                        },
+                        Time = 15.0f,
+                        StatusTerm = "Researching Golemancy"
                     }
                 }
             ),
