@@ -5,6 +5,9 @@
         public override bool DetermineCanHaveCardsWhenIsRoot =>
             MyGameCard.Child?.CardData.DetermineCanHaveCardsWhenIsRoot ?? false;
 
+        public override bool CanHaveCardsWhileHasStatus() =>
+            MyGameCard.Child?.CardData.CanHaveCardsWhileHasStatus() ?? false;
+
         public override bool CanHaveCard(CardData otherCard)
         {
             if (MyGameCard.Child != null)
