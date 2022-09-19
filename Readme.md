@@ -14,6 +14,8 @@ to immediately get all ideas of the mod.
 After using a filter on it (explained below), all produced cards in the area around
 the storage place matching the filter will automatically be moved onto it.
 
+You can also place other buildings like stoves, brickyards, or smelters on top of it.
+
 ### Filter
 
 Basically just a list of cards. Place any cards on top of it to add them to the filter. Use a villager to clear the list.
