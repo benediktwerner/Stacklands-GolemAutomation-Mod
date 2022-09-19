@@ -4,11 +4,21 @@ namespace GolemAutomation
 {
     class LocationGlyph : CardData
     {
+        public override bool DetermineCanHaveCardsWhenIsRoot =>
+            MyGameCard.Child?.CardData.DetermineCanHaveCardsWhenIsRoot ?? false;
+
+        public override bool CanHaveCardsWhileHasStatus() =>
+            MyGameCard.Child?.CardData.CanHaveCardsWhileHasStatus() ?? false;
+
         public override bool CanHaveCard(CardData otherCard)
         {
             return (otherCard.IsBuilding && otherCard is not Golem)
                 || otherCard.Id == Id
-                || otherCard.MyCardType == CardType.Humans;
+                || otherCard.MyCardType == CardType.Humans
+                || (
+                    DetermineCanHaveCardsWhenIsRoot
+                    && MyGameCard.Child.CardData.CanHaveCard(otherCard)
+                );
         }
 
         [ExtraData(Consts.LOCATION_GLYPH + ".target")]
