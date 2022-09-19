@@ -278,7 +278,7 @@ namespace GolemAutomation
             Card.Create<GolemModuleSell>(
                 Consts.GOLEM_MOD_SELL,
                 "Selling Module",
-                "Allows the golem to sell stuff",
+                "Allows the golem to sell stuff. When transfering to a full chest, excess gold will be voided to avoid overflows.",
                 15,
                 CardType.Resources
             ),

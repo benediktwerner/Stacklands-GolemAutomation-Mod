@@ -65,6 +65,17 @@ namespace GolemAutomation
 
         public static bool IsAlive(GameCard card) => IsAnimal(card.CardData);
 
+        public static bool IsCurrencyStack(CardData card)
+        {
+            while (card != null)
+            {
+                if (card.Id != Card.Currency)
+                    return false;
+                card = card.MyGameCard.Child?.CardData;
+            }
+            return true;
+        }
+
         public static void Restack(List<GameCard> cards)
         {
             if (cards.Count == 0)
@@ -85,7 +96,9 @@ namespace GolemAutomation
 
         public static void BounceTo(GameCard card, GameCard to)
         {
-            card.BounceTarget = to;
+            // card.BounceTarget = to;
+            to.Child = card;
+            card.Parent = to;
             var vec = to.transform.position - card.transform.position;
             card.Velocity = new Vector3(vec.x * 4f, 7f, vec.z * 4f);
         }

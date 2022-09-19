@@ -113,10 +113,12 @@ namespace GolemAutomation
                 if (g1.HasCardOnTop<LocationGlyph>(out var g2))
                 {
                     return g2.MyGameCard.GetChildCount() + otherCard.MyGameCard.GetChildCount() + 1
-                        <= CarryingCapacity;
+                            <= CarryingCapacity
+                        || Card.IsCurrencyStack(otherCard);
                 }
                 return g1.MyGameCard.GetChildCount() + otherCard.MyGameCard.GetChildCount() + 1
-                    <= CarryingCapacity;
+                        <= CarryingCapacity
+                    || Card.IsCurrencyStack(otherCard);
             }
             if (child.CardData is Golem)
                 return otherCard is Golem;
@@ -187,7 +189,7 @@ namespace GolemAutomation
             if (first == null || spaceLeft == 0)
                 return false;
             var parent = first.Parent;
-            var currency = WorldManager.instance.CurrentBoard.Id == "main" ? "gold" : "shell";
+            var currency = Card.Currency;
             var gold = new List<GameCard>();
             var notGold = new List<GameCard>();
             do
@@ -198,6 +200,11 @@ namespace GolemAutomation
                     notGold.Add(first);
                 first = first.Child;
             } while (first != null && gold.Count < spaceLeft);
+            while (first != null)
+            {
+                notGold.Add(first);
+                first = first.Child;
+            }
             if (gold.Count == 0)
                 return false;
             Card.Restack(gold);
@@ -205,7 +212,31 @@ namespace GolemAutomation
             first = gold[0];
             if (target.CardData.CanHaveCardOnTop(first.CardData))
             {
-                Card.BounceTo(first, target);
+                var targetRoot = target.GetRootCard();
+                if (targetRoot.CardData is Chest chest)
+                {
+                    var goldCount = gold.Count;
+                    while (goldCount > 0)
+                    {
+                        var chestWithSpace = chest.GetChestWithSpace();
+                        if (chestWithSpace == null)
+                        {
+                            break;
+                        }
+                        var add = Math.Min(
+                            chestWithSpace.maxCoinCount - chestWithSpace.CoinCount,
+                            goldCount
+                        );
+                        chestWithSpace.CoinCount += add;
+                        goldCount -= add;
+                    }
+                    foreach (var g in gold)
+                        g.DestroyCard(true, true);
+                }
+                else
+                {
+                    Card.BounceTo(first, target);
+                }
                 if (notGold.Count > 0)
                     Card.Parent(parent, notGold[0]);
                 else
