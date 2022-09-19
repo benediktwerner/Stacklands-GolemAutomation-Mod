@@ -150,7 +150,7 @@ namespace GolemAutomation
                         Consts.Idea(Consts.GOLEM_L),
                     };
 
-                    const string statusTerm = Consts.CRASHED_SPACESHIP + ".status";
+                    const string statusTerm = Consts.BROKEN_GOLEM + ".status";
                     c.StatusTerm = statusTerm;
                     AddTranslation(statusTerm, "Dismantling broken golem");
                 }
@@ -189,7 +189,7 @@ namespace GolemAutomation
                         Consts.Idea(Consts.GOLEM_XL_LEGS),
                     };
 
-                    const string statusTerm = Consts.CRASHED_SPACESHIP + ".status";
+                    const string statusTerm = Consts.BROKEN_GOLEM_XL + ".status";
                     c.StatusTerm = statusTerm;
                     AddTranslation(statusTerm, "Dismantling broken golem");
                 }
