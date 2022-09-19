@@ -4,18 +4,16 @@
     <AssemblyName>GolemAutomation</AssemblyName>
     <Product>GolemAutomation</Product>
     <Description>Use golems to automate stuff</Description>
-    <Version>1.1.0</Version>
+    <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2020.3.6" IncludeAssets="compile" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="GameScripts">
       <HintPath>$(GAME_PATH)\Stacklands_Data\Managed\publicized_assemblies\GameScripts_publicized.dll</HintPath>
@@ -30,26 +28,23 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
   </ItemGroup>
-
   <PropertyGroup>
     <GAME_PATH>G:\Steam\steamapps\common\Stacklands</GAME_PATH>
     <MOD_NAME>GolemAutomation</MOD_NAME>
     <OUTPUT_PATH>$(GAME_PATH)/BepInEx/plugins/$(MOD_NAME)</OUTPUT_PATH>
     <TMP_OUTPUT_PATH>$(OUTPUT_PATH)/tmp</TMP_OUTPUT_PATH>
   </PropertyGroup>
-
   <Target Name="CopyToGameDir" AfterTargets="AfterBuild">
     <RemoveDir Directories="$(TMP_OUTPUT_PATH)" />
     <MakeDir Directories="$(OUTPUT_PATH)" />
     <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(TMP_OUTPUT_PATH)" />
     <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(OUTPUT_PATH)/$(MOD_NAME)-Nexus.zip" />
-    <!--<Copy SourceFiles="manifest.json" DestinationFolder="$(TMP_OUTPUT_PATH)" />
+    <Copy SourceFiles="manifest.json" DestinationFolder="$(TMP_OUTPUT_PATH)" />
     <Copy SourceFiles="README.md" DestinationFolder="$(TMP_OUTPUT_PATH)" />
-    <Copy SourceFiles="icon.png" DestinationFolder="$(TMP_OUTPUT_PATH)" />-->
+    <Copy SourceFiles="icon.png" DestinationFolder="$(TMP_OUTPUT_PATH)" />
     <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(OUTPUT_PATH)/$(MOD_NAME)-Thunderstore.zip" />
     <Unzip SourceFiles="$(OUTPUT_PATH)/$(MOD_NAME)-Thunderstore.zip" DestinationFolder="$(OUTPUT_PATH)" />
     <RemoveDir Directories="$(TMP_OUTPUT_PATH)" />
