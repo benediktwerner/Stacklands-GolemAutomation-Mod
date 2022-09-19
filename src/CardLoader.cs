@@ -197,7 +197,7 @@ namespace GolemAutomation
             Card.Create<Resource>(
                 Consts.ENERGY_COMBOBULATOR,
                 "Energy Combobulator",
-                "Combobulates energy into golem cores",
+                "Combobulates gold and glass into energy cores",
                 30,
                 CardType.Structures,
                 building: true
@@ -241,7 +241,7 @@ namespace GolemAutomation
             Card.Create<Golem>(
                 Consts.GOLEM_L,
                 "Large Golem",
-                "Slower but can carry 5 cards at once and load more modules",
+                "Slower than a golem but can carry 5 cards at once and load more modules",
                 50,
                 CardType.Structures,
                 building: true,
@@ -256,7 +256,7 @@ namespace GolemAutomation
             Card.Create<Golem>(
                 Consts.GOLEM_XL,
                 "Humongous Golem",
-                "Even slower but can carry 10 cards at once and load even more modules",
+                "Slower than a Large Golem but can carry 10 cards at once and load even more modules",
                 150,
                 CardType.Structures,
                 building: true,
