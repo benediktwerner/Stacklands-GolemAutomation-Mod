@@ -2,7 +2,7 @@
 {
     class GolemModuleSell : GolemModule
     {
-        public override bool CanInsert(Golem g) => !g.HasSellingModule && g.CraftingRecipe == null;
+        public override bool CanInsert(Golem g) => !g.HasSellingModule && !g.HasRecipe;
 
         public override void Insert(Golem g)
         {

@@ -32,9 +32,13 @@ namespace GolemAutomation
         public string CraftingRecipe = "";
         public bool HasRecipe => CraftingRecipe.Length > 0;
 
-        public int CarryingCapacity = 1;
+        [ExtraData(Consts.GOLEM + ".modules_left")]
         public int ModulesLeft = 2;
+
+        public int CarryingCapacity = 1;
         public string ModulePostfix = "";
+
+        public bool HasModule => Counter > 0 || HasSellingModule || HasRecipe || SpeedModules > 0;
 
         public new void Start()
         {
@@ -69,15 +73,22 @@ namespace GolemAutomation
                 descriptionOverride = "Recipe: " + string.Join(", ", array);
             }
             else
+            {
                 base.UpdateDescription();
+                if (!HasModule)
+                    return;
+            }
+            if (descriptionOverride == null)
+            {
+                descriptionOverride = this.GetTooltipText();
+            }
+            descriptionOverride += "\n\n";
             if (Counter > 0)
             {
-                var s = "Counter: " + Counter;
-                if (descriptionOverride == null)
-                    descriptionOverride = s;
-                else
-                    descriptionOverride += "\n\n" + s;
+                descriptionOverride += "Counter: " + Counter + "\n";
             }
+            descriptionOverride +=
+                "Remaining Module Slots: " + ModulesLeft + "\nUse a villager to remove modules";
         }
 
         public override bool CanHaveCard(CardData otherCard)
@@ -145,7 +156,7 @@ namespace GolemAutomation
                 return false;
             if (child.MyCardType == CardType.Humans)
             {
-                if (SpeedModules > 0 || HasSellingModule || Counter > 0)
+                if (HasModule)
                 {
                     MyGameCard.StartTimer(
                         10f,
@@ -587,6 +598,7 @@ namespace GolemAutomation
                     UnityEngine.Random.Range(0.8f, 1.2f),
                     0.3f
                 );
+                UpdateModulePostfix();
                 UpdateDescription();
             }
         }
@@ -654,6 +666,7 @@ namespace GolemAutomation
             SpeedModifier = BaseSpeedModifier;
             Counter = 0;
             CraftingRecipe = "";
+            UpdateModulePostfix();
             UpdateDescription();
         }
     }

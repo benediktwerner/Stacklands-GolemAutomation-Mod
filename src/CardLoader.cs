@@ -233,7 +233,7 @@ namespace GolemAutomation
             Card.Create<Golem>(
                 Consts.GOLEM,
                 "Golem",
-                "Moves cards from one Storage Space to another. Use two Location Glyphs to specify start and end. Use a filter to restrict what it picks up.",
+                "Moves cards from one stack to another. Use two Location Glyphs to specify start and end or a single one to dump cards next to the golem. Use a filter to restrict what it picks up. Has space for 2 golem modules.",
                 20,
                 CardType.Structures,
                 building: true
@@ -241,7 +241,7 @@ namespace GolemAutomation
             Card.Create<Golem>(
                 Consts.GOLEM_L,
                 "Large Golem",
-                "Slower than a golem but can carry 5 cards at once and load more modules",
+                "Slower than a golem but can carry 5 cards at once and load 4 modules",
                 50,
                 CardType.Structures,
                 building: true,
@@ -256,7 +256,7 @@ namespace GolemAutomation
             Card.Create<Golem>(
                 Consts.GOLEM_XL,
                 "Humongous Golem",
-                "Slower than a Large Golem but can carry 10 cards at once and load even more modules",
+                "Slower than a Large Golem but can carry 10 cards at once and load 5 modules",
                 150,
                 CardType.Structures,
                 building: true,
