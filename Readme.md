@@ -3,7 +3,7 @@
 This mod adds golems which can be used to automate moving around cards, selling them, and crafting things.
 
 To find the ideas for the cards:
-- Buy `Logic and Reason` packs for storage place and filter
+- Buy `Logic and Reason` packs (on the mainland) for storage place and filter
 - Buy `Island Insights` packs for all the golem stuff
 - Explore the `Jungle` to find the ideas for humongous golems and get some ressources
 
