@@ -89,6 +89,13 @@ namespace GolemAutomation
                 7,
                 CardType.Resources
             ),
+            Card.Create<AreaGlyph>(
+                Consts.AREA_GLYPH,
+                "Area Glyph",
+                "Makes the Golem collect ressources from nearby storage piles instead of a bound location.",
+                10,
+                CardType.Resources
+            ),
             Card.Create<Resource>(
                 Consts.CRASHED_SPACESHIP,
                 "Crashed Spaceship",
@@ -217,7 +224,7 @@ namespace GolemAutomation
             Card.Create<Golem>(
                 Consts.GOLEM,
                 "Golem",
-                "Moves cards from one stack to another. Use two Location Glyphs to specify start and end or a single one to dump cards next to the golem. Use a filter to restrict what it picks up. Has space for 2 golem modules.",
+                "Moves one card from one stack to another. Use two Location Glyphs to specify start and end or a single one to dump cards next to the golem. Use a filter to restrict what it picks up. Has space for 2 golem modules.",
                 20,
                 CardType.Structures,
                 building: true
@@ -276,7 +283,7 @@ namespace GolemAutomation
             Card.Create<GolemModuleCounter>(
                 Consts.GOLEM_MOD_COUNTER,
                 "Counter Module",
-                "Allows the golem to count.\n\nPlace coins on it to set the count.",
+                "Allows the golem to count (and only pick up cards from the source stack that are over the limit).\n\nPlace coins on it to set the count.",
                 10,
                 CardType.Resources
             ),
@@ -365,6 +372,20 @@ namespace GolemAutomation
                         ResultCard = Consts.LOCATION_GLYPH,
                         Time = 5.0f,
                         StatusTerm = "Unbinding Glyph",
+                    },
+                }
+            ),
+            new Idea(
+                Consts.AREA_GLYPH,
+                Consts.BLUEPRINT_GROUP_GOLEM,
+                new List<Subprint>
+                {
+                    new Subprint
+                    {
+                        RequiredCards = new[] { Consts.LOCATION_GLYPH, Consts.ROPE },
+                        ResultCard = Consts.AREA_GLYPH,
+                        Time = 10.0f,
+                        StatusTerm = "Making Area Glyph",
                     },
                 }
             ),

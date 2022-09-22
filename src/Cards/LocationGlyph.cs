@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace GolemAutomation
 {
-    class LocationGlyph : CardData
+    class LocationGlyph : Glyph
     {
         public override bool DetermineCanHaveCardsWhenIsRoot =>
             MyGameCard.Child?.CardData.DetermineCanHaveCardsWhenIsRoot ?? false;
@@ -94,6 +95,15 @@ namespace GolemAutomation
             {
                 descriptionOverride = null;
             }
+        }
+
+        public override List<GameCard> FindTargets()
+        {
+            if (target != null && target.MyBoard.IsCurrent && target.Child != null)
+            {
+                return new List<GameCard>(1) { target };
+            }
+            return new List<GameCard>(0);
         }
     }
 }

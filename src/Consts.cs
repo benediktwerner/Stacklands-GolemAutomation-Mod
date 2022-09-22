@@ -9,6 +9,7 @@
         public const string STORAGE_PLACE = PREFIX + "storage";
         public const string FILTER = PREFIX + "filter";
         public const string LOCATION_GLYPH = PREFIX + "location_glyph";
+        public const string AREA_GLYPH = PREFIX + "_area_glyph";
         public const string CRASHED_SPACESHIP = PREFIX + "crashed_spaceship";
         public const string ENERGY_COMBOBULATOR = PREFIX + "energy_combobulator";
         public const string ENERGY_CORE = PREFIX + "energy_core";

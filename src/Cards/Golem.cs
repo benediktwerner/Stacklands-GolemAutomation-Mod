@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace GolemAutomation
 {
@@ -55,6 +56,8 @@ namespace GolemAutomation
                 modules.Add("$");
             if (HasRecipe)
                 modules.Add("C");
+            if (Counter > 0)
+                modules.Add("#");
             if (modules.Count > 0)
                 ModulePostfix = " +" + string.Join("/", modules);
             else
@@ -80,7 +83,7 @@ namespace GolemAutomation
             }
             if (descriptionOverride == null)
             {
-                descriptionOverride = this.GetTooltipText();
+                descriptionOverride = Description;
             }
             descriptionOverride += "\n\n";
             if (Counter > 0)
@@ -97,7 +100,7 @@ namespace GolemAutomation
             if (child == null)
             {
                 if (
-                    otherCard is LocationGlyph
+                    otherCard is Glyph
                     && (
                         otherCard.MyGameCard.Child == null
                         || (
@@ -119,7 +122,7 @@ namespace GolemAutomation
                     return true;
                 return false;
             }
-            if (HasCardOnTop<LocationGlyph>(out var g1))
+            if (HasCardOnTop<Glyph>(out var g1))
             {
                 if (g1.HasCardOnTop<LocationGlyph>(out var g2))
                 {
@@ -182,7 +185,7 @@ namespace GolemAutomation
                 }
                 return false;
             }
-            if (child is LocationGlyph)
+            if (child is Glyph)
             {
                 MyGameCard.StartTimer(
                     5f * SpeedModifier,
@@ -395,10 +398,8 @@ namespace GolemAutomation
             }
         }
 
-        public bool Craft(GameCard card)
+        public bool Craft(GameCard card, GameCard target)
         {
-            if (card == null)
-                return false;
             var parent = card.Parent;
             var leftover = new List<GameCard>();
             var craft = new List<GameCard>();
@@ -422,10 +423,16 @@ namespace GolemAutomation
                     card = Card.PopAndGetChild(card);
                 }
             } while (card != null);
-            if (craft.Count == recipeCount)
+            if (
+                craft.Count == recipeCount
+                && (target == null || target.GetRootCard().GetChildCount() + craft.Count < 30)
+            )
             {
                 Card.Restack(craft);
-                craft[0].SendIt();
+                if (target == null)
+                    craft[0].SendIt();
+                else
+                    Card.BounceTo(craft[0], target.GetLeafCard());
                 Card.Restack(leftover);
                 if (leftover.Count > 0)
                     Card.Parent(parent, leftover[0]);
@@ -461,93 +468,103 @@ namespace GolemAutomation
         [TimedAction(Consts.GOLEM + ".work")]
         public void Work()
         {
-            if (MyGameCard.Child?.CardData is LocationGlyph g1)
+            GameCard target = null;
+            GameCard parent = MyGameCard;
+            if (MyGameCard.Child?.CardData is Glyph g1)
             {
                 if (g1.HasCardOnTop<LocationGlyph>(out var g2))
                 {
-                    var card = g2.MyGameCard.Child;
-                    if (card != null)
-                    {
-                        if (HasRecipe)
-                        {
-                            if (Craft(card))
-                                return;
-                        }
-                        else if (g2.target != null && g2.target.MyBoard.IsCurrent)
-                        {
-                            var targetRoot = g2.target.GetRootCard();
-                            var spaceLeft =
-                                targetRoot.CardData is Chest ? 30 : 29 - targetRoot.GetChildCount();
-                            var targetLeaf = g2.target.GetLeafCard();
-                            if (HasSellingModule)
-                            {
-                                if (MoveGold(card, targetLeaf, spaceLeft))
-                                {
-                                    PopAnimals(card);
-                                    return;
-                                }
-                            }
-                            else if (MoveCards(card, targetLeaf, spaceLeft))
-                            {
-                                PopAnimals(card);
-                                return;
-                            }
-                        }
-                        PopAnimals(card);
-                        if (HasSellingModule)
-                        {
-                            if (Sell(card))
-                                return;
-                        }
-                    }
-                }
-                else if (HasRecipe)
-                {
-                    if (Craft(g1.MyGameCard.Child))
-                        return;
-                }
-                else if (HasSellingModule)
-                {
-                    if (PopGoldAndSell(g1.MyGameCard.Child))
-                        return;
+                    parent = g2.MyGameCard;
+                    target = g2.target;
                 }
                 else
+                    parent = g1.MyGameCard;
+
+                if (target != null && !target.MyBoard.IsCurrent)
+                    target = null;
+
+                var card = parent.Child;
+                if (card != null)
                 {
-                    PopAll(g1.MyGameCard.Child);
+                    if (HasRecipe)
+                    {
+                        if (Craft(card, target))
+                            return;
+                    }
+                    else if (target != null)
+                    {
+                        var targetRoot = target.GetRootCard();
+                        var spaceLeft =
+                            targetRoot.CardData is Chest ? 30 : 29 - targetRoot.GetChildCount();
+                        var targetLeaf = target.GetLeafCard();
+                        if (HasSellingModule)
+                        {
+                            if (MoveGold(card, targetLeaf, spaceLeft))
+                            {
+                                PopAnimals(parent);
+                                return;
+                            }
+                            if (Sell(card))
+                            {
+                                PopAnimals(parent);
+                                return;
+                            }
+                        }
+                        else if (MoveCards(card, targetLeaf, spaceLeft))
+                        {
+                            PopAnimals(parent);
+                            return;
+                        }
+                        PopAnimals(card);
+                    }
+                    else if (HasSellingModule)
+                    {
+                        PopAnimals(card);
+                        if (PopGoldAndSell(card))
+                            return;
+                    }
+                    else
+                    {
+                        PopAll(card);
+                    }
                 }
 
-                if (g1.target != null && g1.target.MyBoard.IsCurrent && g1.target.Child != null)
+                var spaceLeftBase = CarryingCapacity;
+                var jumpTarget = parent;
+                var recipeDictBase = HasRecipe ? CraftingRecipeDict() : null;
+                while (jumpTarget.Child != null)
                 {
-                    var spaceLeft = CarryingCapacity;
-                    var jumpTarget = g2 == null ? g1.MyGameCard : g2.MyGameCard;
+                    jumpTarget = jumpTarget.Child;
+                    spaceLeftBase--;
+                    if (
+                        recipeDictBase != null
+                        && recipeDictBase.TryGetValue(jumpTarget.CardData.Id, out int c)
+                        && c > 0
+                    )
+                    {
+                        recipeDictBase[jumpTarget.CardData.Id]--;
+                    }
+                }
+
+                foreach (var source in g1.FindTargets())
+                {
+                    var recipeDict =
+                        recipeDictBase == null ? null : new Dictionary<string, int>(recipeDictBase);
+                    var spaceLeft = spaceLeftBase;
                     if (Counter > 0)
                     {
-                        var take = g1.target.GetChildCount() - Counter;
+                        var take = source.GetChildCount() - Counter;
                         if (take <= 0)
-                            return;
+                            continue;
                         if (take < spaceLeft)
                             spaceLeft = take;
                     }
-                    var recipeDict = HasRecipe ? CraftingRecipeDict() : null;
-                    while (jumpTarget.Child != null)
-                    {
-                        jumpTarget = jumpTarget.Child;
-                        spaceLeft--;
-                        if (
-                            recipeDict != null
-                            && recipeDict.TryGetValue(jumpTarget.CardData.Id, out int c)
-                            && c > 0
-                        )
-                        {
-                            recipeDict[jumpTarget.CardData.Id]--;
-                        }
-                    }
                     if (spaceLeft <= 0)
-                        return;
-                    var card = g1.target.GetLeafCard();
+                        continue;
+                    card = source.GetLeafCard();
                     var move = new List<GameCard>();
                     var leftover = new List<GameCard>();
-                    while (card != g1.target && spaceLeft > 0)
+                    while (card != source && spaceLeft > 0)
                     {
                         if (
                             (
@@ -580,6 +597,7 @@ namespace GolemAutomation
                         }
                         else
                             card.Child = null;
+                        return;
                     }
                 }
             }

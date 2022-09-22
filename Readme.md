@@ -30,6 +30,8 @@ To bind a location glyph, simply place the building you want to bind it to on to
 
 Hovering over the glyph will highlight the bound building in blue.
 
+Area Glyphs are a variation of Location Glyphs that instead make the golem take cards from nearby Storage Piles.
+
 ### Golems
 
 Golems come in three sizes: Normal, Large, and Humongous.
@@ -70,5 +72,9 @@ This mod requires BepInEx to work. BepInEx is a modding framework which allows m
 
 ## Changelog
 
-- v1.1: Rework unlock progression and make storage places and paper available without going to the island
+- v1.1:
+  - Rework unlock progression
+  - Make storage places and paper available without going to the island
+  - Add Area Glyph
+  - Allow Crafting Golems to output to location
 - v1.0: Initial release

@@ -31,20 +31,20 @@
             {
                 MyGameCard.StartTimer(
                     10f,
-                    new TimerAction(IncreaseCount),
-                    "Increasing count",
-                    GetActionId(nameof(IncreaseCount))
+                    new TimerAction(SetCount),
+                    "Setting count",
+                    GetActionId(nameof(SetCount))
                 );
             }
             else if (MyGameCard.TimerRunning)
             {
-                MyGameCard.CancelTimer(GetActionId(nameof(IncreaseCount)));
+                MyGameCard.CancelTimer(GetActionId(nameof(SetCount)));
             }
             base.UpdateCard();
         }
 
-        [TimedAction(Consts.GOLEM_MOD_COUNTER + ".increase_count")]
-        public void IncreaseCount()
+        [TimedAction(Consts.GOLEM_MOD_COUNTER + ".set_count")]
+        public void SetCount()
         {
             Counter = MyGameCard.GetChildCount();
             UpdateDescription();
