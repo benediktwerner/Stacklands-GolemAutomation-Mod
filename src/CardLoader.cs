@@ -54,18 +54,24 @@ namespace GolemAutomation
                 card.BlueprintGroup = idea.Group;
                 card.Subprints = idea.Subprints;
                 card.NeedsExactMatch = idea.NeedsExactMatch;
+                foreach (var sub in card.Subprints)
+                {
+                    var term = Consts.PREFIX + sub.StatusTerm.Replace(" ", "").ToLower();
+                    AddTranslation(term, sub.StatusTerm);
+                    sub.StatusTerm = term;
+                }
                 allCards.Add(card);
             }
         }
 
         public static readonly Card[] Cards = new[]
         {
-            Card.Create<Resource>(Consts.PAPER, "Paper", "This is paper", 5, CardType.Resources),
+            Card.Create<Resource>(Consts.PAPER, "Paper", "This is paper", 1, CardType.Resources),
             Card.Create<StoragePlace>(
                 Consts.STORAGE_PLACE,
                 "Storage Place",
-                "Use a filter on it to specify which resources should automatically be placed here\n\nOther buildings can be placed on top",
-                1,
+                "Use a filter on it to specify resources that should automatically be placed here.\n\nOther buildings can be placed on top.",
+                5,
                 CardType.Structures,
                 building: true
             ),
@@ -83,35 +89,12 @@ namespace GolemAutomation
                 7,
                 CardType.Resources
             ),
-            Card.Create<Harvestable>(
+            Card.Create<Resource>(
                 Consts.CRASHED_SPACESHIP,
                 "Crashed Spaceship",
-                "How did this end up here?",
+                "This doesn't do anything anymore and only exists for backwards compatibility.",
                 5,
-                CardType.Locations,
-                init: (c) =>
-                {
-                    c.IsUnlimited = true;
-                    c.HarvestTime = 30f;
-                    c.MyCardBag = new CardBag
-                    {
-                        CardBagType = CardBagType.Chances,
-                        Chances = new List<CardChance>
-                        {
-                            new CardChance { Id = Consts.IRON_BAR, Chance = 5 },
-                            new CardChance { Id = Consts.GOLD_BAR, Chance = 5 },
-                            new CardChance { Id = Consts.GLASS, Chance = 3 },
-                            new CardChance { Id = Consts.ENERGY_CORE, Chance = 3 },
-                            new CardChance { Id = Consts.BROKEN_GOLEM, Chance = 3 },
-                            new CardChance { Id = Consts.BROKEN_GOLEM_XL, Chance = 1 },
-                            new CardChance { Id = Consts.ENERGY_COMBOBULATOR, Chance = 1 }
-                        }
-                    };
-
-                    const string statusTerm = Consts.CRASHED_SPACESHIP + ".status";
-                    c.StatusTerm = statusTerm;
-                    AddTranslation(statusTerm, "Exploring spaceship");
-                }
+                CardType.Resources
             ),
             Card.Create<HarvestableWithIdea>(
                 Consts.BROKEN_GOLEM,
@@ -148,6 +131,7 @@ namespace GolemAutomation
                         Consts.Idea(Consts.GOLEM_MOD_COUNTER),
                         Consts.Idea(Consts.GOLEM_MOD_CRAFTER),
                         Consts.Idea(Consts.GOLEM_L),
+                        Consts.Idea(Consts.GOLEM_XL),
                     };
 
                     const string statusTerm = Consts.BROKEN_GOLEM + ".status";
@@ -170,8 +154,8 @@ namespace GolemAutomation
                         CardBagType = CardBagType.Chances,
                         Chances = new List<CardChance>
                         {
-                            new CardChance { Id = Consts.IRON_BAR, Chance = 10 },
-                            new CardChance { Id = Consts.GOLD_BAR, Chance = 10 },
+                            new CardChance { Id = Consts.IRON_BAR, Chance = 5 },
+                            new CardChance { Id = Consts.GOLD_BAR, Chance = 5 },
                             new CardChance { Id = Consts.GLASS, Chance = 5 },
                             new CardChance { Id = Consts.ENERGY_CORE, Chance = 3 },
                             new CardChance { Id = Consts.LOCATION_GLYPH, Chance = 3 },
@@ -314,42 +298,12 @@ namespace GolemAutomation
                 {
                     new Subprint
                     {
-                        RequiredCards = new[] { Consts.SUGAR, Consts.SUGAR, Consts.ANY_VILL },
+                        RequiredCards = new[] { Consts.BRICK, Consts.SUGAR_CANE },
                         ResultCard = Consts.PAPER,
+                        CardsToRemove = new[] { Consts.SUGAR_CANE },
                         Time = 10.0f,
                         StatusTerm = "Making Paper",
                     },
-                    new Subprint
-                    {
-                        RequiredCards = new[]
-                        {
-                            Consts.OLD_TOME,
-                            Consts.ENERGY_CORE,
-                            Consts.ANY_VILL
-                        },
-                        ResultCard = Consts.Idea(Consts.PAPER),
-                        ExtraResultCards = new[]
-                        {
-                            Consts.Idea(Consts.STORAGE_PLACE),
-                            Consts.Idea(Consts.FILTER),
-                            Consts.Idea(Consts.LOCATION_GLYPH),
-                            Consts.Idea(Consts.ENERGY_COMBOBULATOR),
-                            Consts.Idea(Consts.ENERGY_CORE),
-                            Consts.Idea(Consts.GOLEM),
-                            Consts.Idea(Consts.GOLEM_L),
-                            Consts.Idea(Consts.GOLEM_XL),
-                            Consts.Idea(Consts.GOLEM_XL_LEFT_ARM),
-                            Consts.Idea(Consts.GOLEM_XL_RIGHT_ARM),
-                            Consts.Idea(Consts.GOLEM_XL_LEGS),
-                            Consts.Idea(Consts.GOLEM_MOD),
-                            Consts.Idea(Consts.GOLEM_MOD_SELL),
-                            Consts.Idea(Consts.GOLEM_MOD_SPEED),
-                            Consts.Idea(Consts.GOLEM_MOD_COUNTER),
-                            Consts.Idea(Consts.GOLEM_MOD_CRAFTER),
-                        },
-                        Time = 15.0f,
-                        StatusTerm = "Researching Golemancy"
-                    }
                 }
             ),
             new Idea(
@@ -361,7 +315,7 @@ namespace GolemAutomation
                     {
                         RequiredCards = new[]
                         {
-                            Consts.ROPE,
+                            Consts.PLANK,
                             Consts.STICK,
                             Consts.STICK,
                             Consts.ANY_VILL
@@ -379,7 +333,7 @@ namespace GolemAutomation
                 {
                     new Subprint
                     {
-                        RequiredCards = new[] { Consts.PAPER, Consts.CHARCOAL },
+                        RequiredCards = new[] { Consts.IRON_BAR, Consts.FLINT },
                         ResultCard = Consts.FILTER,
                         Time = 5.0f,
                         StatusTerm = "Making Filter",
@@ -476,7 +430,6 @@ namespace GolemAutomation
                         {
                             Consts.ENERGY_CORE,
                             Consts.IRON_BAR,
-                            Consts.GOLD_BAR,
                             Consts.GLASS,
                             Consts.ANY_VILL
                         },
@@ -500,7 +453,6 @@ namespace GolemAutomation
                             Consts.ENERGY_CORE,
                             Consts.IRON_BAR,
                             Consts.IRON_BAR,
-                            Consts.GOLD_BAR,
                             Consts.GOLD_BAR,
                             Consts.GLASS,
                             Consts.ANY_VILL

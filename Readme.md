@@ -2,10 +2,10 @@
 
 This mod adds golems which can be used to automate moving around cards, selling them, and crafting things.
 
-To get started with the mod, explore the Jungle (which can be found on the island). You can find all the new ideas this way by exploring the new cards you will find this way.
-
-Finding all of them takes a while though so if you prefer, you can instead combine an old tome with a villager and an Energy Core (which is a relatively easy card to find)
-to immediately get all ideas of the mod.
+To find the ideas for the cards:
+- Buy `Logic and Reason` packs for storage place and filter
+- Buy `Island Insights` packs for all the golem stuff
+- Explore the `Jungle` to find the ideas for humongous golems and get some ressources
 
 ## Some basics
 
@@ -70,4 +70,5 @@ This mod requires BepInEx to work. BepInEx is a modding framework which allows m
 
 ## Changelog
 
+- v1.1: Rework unlock progression and make storage places and paper available without going to the island
 - v1.0: Initial release

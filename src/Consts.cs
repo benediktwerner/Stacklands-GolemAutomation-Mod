@@ -27,6 +27,8 @@
         public const string GOLEM_MOD_CRAFTER = GOLEM_MOD + "_crafter";
 
         public const string SUGAR = "sugar";
+        public const string SUGAR_CANE = "sugar_cane";
+        public const string FLINT = "flint";
         public const string STICK = "stick";
         public const string ROPE = "rope";
         public const string CHARCOAL = "charcoal";

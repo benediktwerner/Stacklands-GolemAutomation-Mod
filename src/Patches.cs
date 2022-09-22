@@ -133,11 +133,53 @@ namespace GolemAutomation
 
         [HarmonyPatch(typeof(GameDataLoader), MethodType.Constructor)]
         [HarmonyPostfix]
-        public static void CrashedSpaceshipInJungle(GameDataLoader __instance)
+        public static void InsertDrops(GameDataLoader __instance)
         {
-            ((Harvestable)__instance.idToCard[Consts.JUNGLE]).MyCardBag.Chances.Add(
-                new CardChance { Id = Consts.CRASHED_SPACESHIP, Chance = 1 }
+            var jungleChances = ((Harvestable)__instance.idToCard[Consts.JUNGLE]).MyCardBag.Chances;
+            jungleChances.Add(new CardChance { Id = Consts.BROKEN_GOLEM, Chance = 1 });
+            jungleChances.Add(new CardChance { Id = Consts.BROKEN_GOLEM_XL, Chance = 1 });
+            AddBoosterIdea(
+                __instance,
+                SetCardBag.AdvancedBuildingIdea,
+                SetCardBagHelper.AdvancedBuildingIdea,
+                Consts.Idea(Consts.FILTER),
+                Consts.Idea(Consts.STORAGE_PLACE)
             );
+            AddBoosterIdea(
+                __instance,
+                SetCardBag.Island_AdvancedIdea,
+                SetCardBagHelper.Island_AdvancedIdea,
+                Consts.Idea(Consts.LOCATION_GLYPH),
+                Consts.Idea(Consts.ENERGY_CORE),
+                Consts.Idea(Consts.GOLEM_MOD),
+                Consts.Idea(Consts.GOLEM_MOD_SELL),
+                Consts.Idea(Consts.GOLEM_MOD_SPEED),
+                Consts.Idea(Consts.GOLEM_MOD_COUNTER),
+                Consts.Idea(Consts.GOLEM_MOD_CRAFTER)
+            );
+            AddBoosterIdea(
+                __instance,
+                SetCardBag.Island_AdvancedBuildingIdea,
+                SetCardBagHelper.Island_AdvancedBuildingIdea,
+                Consts.Idea(Consts.ENERGY_COMBOBULATOR),
+                Consts.Idea(Consts.GOLEM),
+                Consts.Idea(Consts.GOLEM_L)
+            );
+        }
+
+        public static void AddBoosterIdea(
+            GameDataLoader __instance,
+            SetCardBag bag,
+            string existing,
+            params string[] cardIds
+        )
+        {
+            if (__instance.result.TryGetValue(bag, out var value))
+            {
+                existing = value;
+            }
+
+            __instance.result[bag] = existing + ", " + cardIds.Join(delimiter: ", ");
         }
     }
 }
