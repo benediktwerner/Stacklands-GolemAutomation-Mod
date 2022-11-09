@@ -141,14 +141,12 @@ namespace GolemAutomation
             AddBoosterIdea(
                 __instance,
                 SetCardBag.AdvancedBuildingIdea,
-                SetCardBagHelper.AdvancedBuildingIdea,
                 Consts.Idea(Consts.FILTER),
                 Consts.Idea(Consts.STORAGE_PLACE)
             );
             AddBoosterIdea(
                 __instance,
                 SetCardBag.Island_AdvancedIdea,
-                SetCardBagHelper.Island_AdvancedIdea,
                 Consts.Idea(Consts.LOCATION_GLYPH),
                 Consts.Idea(Consts.ENERGY_CORE),
                 Consts.Idea(Consts.GOLEM_MOD),
@@ -160,7 +158,6 @@ namespace GolemAutomation
             AddBoosterIdea(
                 __instance,
                 SetCardBag.Island_AdvancedBuildingIdea,
-                SetCardBagHelper.Island_AdvancedBuildingIdea,
                 Consts.Idea(Consts.ENERGY_COMBOBULATOR),
                 Consts.Idea(Consts.GOLEM),
                 Consts.Idea(Consts.GOLEM_L)
@@ -170,15 +167,10 @@ namespace GolemAutomation
         public static void AddBoosterIdea(
             GameDataLoader __instance,
             SetCardBag bag,
-            string existing,
             params string[] cardIds
         )
         {
-            if (__instance.result.TryGetValue(bag, out var value))
-            {
-                existing = value;
-            }
-
+            var existing = __instance.GetStringForBag(bag);
             __instance.result[bag] = existing + ", " + cardIds.Join(delimiter: ", ");
         }
     }

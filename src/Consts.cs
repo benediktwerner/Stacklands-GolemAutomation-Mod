@@ -45,6 +45,7 @@
         public const string OLD_TOME = "old_tome";
 
         public const string MAINLAND = "main";
+        public const string ISLAND = "island";
 
         public const BlueprintGroup BLUEPRINT_GROUP_GOLEM = (BlueprintGroup)449;
 

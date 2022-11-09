@@ -159,6 +159,6 @@ namespace GolemAutomation
         }
 
         public static string Currency =>
-            WorldManager.instance.CurrentBoard.Id == Consts.MAINLAND ? Consts.COIN : Consts.SHELL;
+            WorldManager.instance.CurrentBoard?.Id == Consts.ISLAND ? Consts.SHELL : Consts.COIN;
     }
 }

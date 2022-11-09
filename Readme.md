@@ -72,6 +72,9 @@ This mod requires BepInEx to work. BepInEx is a modding framework which allows m
 
 ## Changelog
 
+- v1.2.0:
+  - Witch Forest Update Compatibility
+  - Fix Counter Module cardopedia entry
 - v1.1:
   - Rework unlock progression
   - Make storage places and paper available without going to the island
