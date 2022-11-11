@@ -72,6 +72,7 @@ This mod requires BepInEx to work. BepInEx is a modding framework which allows m
 
 ## Changelog
 
+- v1.2.1: Fix golems not loading filter on save load
 - v1.2.0:
   - Witch Forest Update Compatibility
   - Fix Counter Module cardopedia entry
