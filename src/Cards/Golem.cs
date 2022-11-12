@@ -224,43 +224,42 @@ namespace GolemAutomation
             Card.Restack(gold);
             Card.Restack(notGold);
             first = gold[0];
-            if (target.CardData.CanHaveCardOnTop(first.CardData))
+            var targetRoot = target.GetRootCard();
+            if (targetRoot.CardData is Chest chest)
             {
-                var targetRoot = target.GetRootCard();
-                if (targetRoot.CardData is Chest chest)
+                var goldCount = gold.Count;
+                while (goldCount > 0)
                 {
-                    var goldCount = gold.Count;
-                    while (goldCount > 0)
+                    var chestWithSpace = chest.GetChestWithSpace();
+                    if (chestWithSpace == null)
                     {
-                        var chestWithSpace = chest.GetChestWithSpace();
-                        if (chestWithSpace == null)
-                        {
-                            break;
-                        }
-                        var add = Math.Min(
-                            chestWithSpace.maxCoinCount - chestWithSpace.CoinCount,
-                            goldCount
-                        );
-                        chestWithSpace.CoinCount += add;
-                        goldCount -= add;
+                        break;
                     }
-                    foreach (var g in gold)
-                        g.DestroyCard(true, true);
+                    var add = Math.Min(
+                        chestWithSpace.maxCoinCount - chestWithSpace.CoinCount,
+                        goldCount
+                    );
+                    chestWithSpace.CoinCount += add;
+                    goldCount -= add;
                 }
-                else
-                {
-                    Card.BounceTo(first, target);
-                }
-                if (notGold.Count > 0)
-                    Card.Parent(parent, notGold[0]);
-                else
-                    parent.Child = null;
-                return true;
+                foreach (var g in gold)
+                    g.DestroyCard(true, true);
             }
-            Card.Parent(parent, first);
+            else if (target.CardData.CanHaveCardOnTop(first.CardData))
+                Card.BounceTo(first, target);
+            else
+            {
+                Card.Parent(parent, first);
+                if (notGold.Count > 0)
+                    Card.Parent(gold[gold.Count - 1], notGold[0]);
+                return false;
+            }
+
             if (notGold.Count > 0)
-                Card.Parent(gold[gold.Count - 1], notGold[0]);
-            return false;
+                Card.Parent(parent, notGold[0]);
+            else
+                parent.Child = null;
+            return true;
         }
 
         public static bool MoveCards(GameCard first, GameCard target, int spaceLeft)
