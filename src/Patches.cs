@@ -173,5 +173,15 @@ namespace GolemAutomation
             var existing = __instance.GetStringForBag(bag);
             __instance.result[bag] = existing + ", " + cardIds.Join(delimiter: ", ");
         }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(SokLoc), nameof(SokLoc.SetLanguage))]
+        public static void LanguageChanged(SokLoc __instance) {
+            if (SokLoc.instance == null) return;
+
+            foreach (var term in CardLoader.Translations) {
+                SokLoc.instance.CurrentLocSet.TermLookup[term.Id] = term;
+            }
+        }
     }
 }

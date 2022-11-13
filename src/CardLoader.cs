@@ -7,12 +7,11 @@ namespace GolemAutomation
     {
         private static GameObject cardContainer;
 
+        public static List<SokTerm> Translations = new List<SokTerm>();
+
         public static void AddTranslation(string id, string text)
         {
-            var term = new SokTerm(SokLoc.FallbackSet, id, text);
-            if (SokLoc.instance != null)
-                SokLoc.instance.CurrentLocSet.TermLookup[id] = term;
-            SokLoc.FallbackSet.TermLookup[id] = term;
+            Translations.Add(new SokTerm(SokLoc.FallbackSet, id.ToLower(), text));
         }
 
         public static void AddCards(List<CardData> allCards)

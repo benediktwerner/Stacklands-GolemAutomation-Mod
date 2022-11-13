@@ -72,6 +72,7 @@ This mod requires BepInEx to work. BepInEx is a modding framework which allows m
 
 ## Changelog
 
+- v1.2.3: Fix card names not showing up for non-English languages
 - v1.2.2: Fix gold not getting deleted when trying to insert into full chests
 - v1.2.1: Fix golems not loading filter on save load
 - v1.2.0:
