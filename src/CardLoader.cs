@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace GolemAutomation
@@ -29,6 +30,13 @@ namespace GolemAutomation
                 AddTranslation(card.NameTerm, c.Name);
                 card.DescriptionTerm = c.Id + "_desc";
                 AddTranslation(card.DescriptionTerm, c.Description);
+                var path = Path.Combine(Path.GetDirectoryName(Plugin.Instance.Info.Location), "icons", c.Id + ".png");
+                if (File.Exists(path))
+                {
+                    var tex = new Texture2D(1024, 1024, TextureFormat.RGBA32, false);
+                    tex.LoadImage(File.ReadAllBytes(path));
+                    card.Icon = Sprite.Create(tex, new Rect(0, 0, 1024, 1024), new Vector2(0.5f, 0.5f));
+                }
                 card.Value = c.Value;
                 card.MyCardType = c.CardType;
                 card.IsBuilding = c.IsBuilding;

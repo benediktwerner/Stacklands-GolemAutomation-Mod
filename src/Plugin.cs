@@ -10,8 +10,11 @@ namespace GolemAutomation
     )]
     public class Plugin : BaseUnityPlugin
     {
+        public static Plugin Instance;
+
         private void Awake()
         {
+            Instance = this;
             Harmony.CreateAndPatchAll(typeof(Patches));
         }
     }
