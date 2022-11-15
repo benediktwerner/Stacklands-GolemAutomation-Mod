@@ -28,29 +28,58 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-  </ItemGroup>
-  <PropertyGroup>
-    <GAME_PATH>G:\Steam\steamapps\common\Stacklands</GAME_PATH>
-    <MOD_NAME>GolemAutomation</MOD_NAME>
-    <OUTPUT_PATH>$(GAME_PATH)/BepInEx/plugins/$(MOD_NAME)</OUTPUT_PATH>
-    <TMP_OUTPUT_PATH>$(OUTPUT_PATH)/tmp</TMP_OUTPUT_PATH>
-  </PropertyGroup>
   <ItemGroup>
     <IconFiles Include="..\icons\*.png"/>
   </ItemGroup>
+  <PropertyGroup>
+    <GAME_NAME>Stacklands</GAME_NAME>
+    <GAME_STEAM_ID>1948280</GAME_STEAM_ID>
+    <MOD_NAME>GolemAutomation</MOD_NAME>
+    <R2MM_PROFILE>Default</R2MM_PROFILE>
+  </PropertyGroup>
+  <PropertyGroup>
+    <R2MM_PATH Condition="!Exists('$(R2MM_PATH)')">$(AppData)\r2modmanPlus-local\$(GAME_NAME)\profiles\$(R2MM_PROFILE)</R2MM_PATH>
+    <R2MM_PATH Condition="!Exists('$(R2MM_PATH)')">$(AppData)\Thunderstore Mod Manager\DataFolder\$(GAME_NAME)\profiles\$(R2MM_PROFILE)</R2MM_PATH>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="($(OS) == 'Unix' OR $(OS) == 'OSX') AND $(GAME_PATH) == ''">
+      <PropertyGroup>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">$(HOME)/.steam/steam/steamapps/common/$(GAME_NAME)</GAME_PATH>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">$(HOME)/Library/Application Support/Steam/steamapps/common/$(GAME_NAME)/Contents/MacOS</GAME_PATH>
+      </PropertyGroup>
+    </When>
+    <When Condition="($(OS) == 'Windows_NT') AND $(GAME_PATH) == ''">
+      <PropertyGroup>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App $(GAME_STEAM_ID)', 'InstallLocation', null, RegistryView.Registry64, RegistryView.Registry32))</GAME_PATH>
+        <_SteamLibraryPath>$([MSBuild]::GetRegistryValueFromView('HKEY_CURRENT_USER\SOFTWARE\Valve\Steam', 'SteamPath', null, RegistryView.Registry32))</_SteamLibraryPath>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)') AND '$(_SteamLibraryPath)' != ''">$(_SteamLibraryPath)\steamapps\common\$(GAME_NAME)</GAME_PATH>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">C:\Program Files\Steam\steamapps\common\$(GAME_NAME)</GAME_PATH>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">C:\Program Files (x86)\Steam\steamapps\common\$(GAME_NAME)</GAME_PATH>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <PropertyGroup>
+    <OUTPUT_PATH Condition="!Exists('$(OUTPUT_PATH)')">$(R2MM_PATH)/BepInEx/plugins/$(MOD_NAME)</OUTPUT_PATH>
+    <OUTPUT_PATH Condition="!Exists('$(OUTPUT_PATH)')">$(GAME_PATH)/BepInEx/plugins/$(MOD_NAME)</OUTPUT_PATH>
+    <TMP_OUTPUT_PATH>$(TargetDir)/tmp</TMP_OUTPUT_PATH>
+  </PropertyGroup>
+  <Target Name="PrintVars" BeforeTargets="BeforeBuild">
+    <Message Text="Game Path: $(GAME_PATH)" Importance="high" />
+    <Message Text="R2MM Path: $(R2MM_PATH)" Importance="high" />
+    <Message Text="Output Path: $(OUTPUT_PATH)" Importance="high" />
+  </Target>
   <Target Name="CopyToGameDir" AfterTargets="AfterBuild">
     <RemoveDir Directories="$(TMP_OUTPUT_PATH)" />
     <MakeDir Directories="$(OUTPUT_PATH)" />
     <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(TMP_OUTPUT_PATH)" />
     <MakeDir Directories="$(TMP_OUTPUT_PATH)/icons" />
     <Copy SourceFiles="@(IconFiles)" DestinationFolder="$(TMP_OUTPUT_PATH)/icons" />
+    <!-- <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(OUTPUT_PATH)/$(MOD_NAME)-Nexus.zip" /> -->
     <Copy SourceFiles="../manifest.json" DestinationFolder="$(TMP_OUTPUT_PATH)" />
     <Copy SourceFiles="../README.md" DestinationFolder="$(TMP_OUTPUT_PATH)" />
     <Copy SourceFiles="../icon.png" DestinationFolder="$(TMP_OUTPUT_PATH)" />
     <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(OUTPUT_PATH)/$(MOD_NAME)-Thunderstore.zip" />
-    <Unzip SourceFiles="$(OUTPUT_PATH)/$(MOD_NAME)-Thunderstore.zip" DestinationFolder="$(OUTPUT_PATH)" />
+    <Unzip SourceFiles="$(OUTPUT_PATH)/$(MOD_NAME)-Thunderstore.zip" DestinationFolder="$(OUTPUT_PATH)"/>
     <RemoveDir Directories="$(TMP_OUTPUT_PATH)" />
   </Target>
 </Project>
