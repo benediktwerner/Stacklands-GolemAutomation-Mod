@@ -82,13 +82,7 @@ namespace GolemAutomation
                 CardType.Structures,
                 building: true
             ),
-            Card.Create<Filter>(
-                Consts.FILTER,
-                "Filter",
-                "Specifies allowed cards",
-                5,
-                CardType.Resources
-            ),
+            Card.Create<Filter>(Consts.FILTER, "Filter", "Specifies allowed cards", 5, CardType.Resources),
             Card.Create<LocationGlyph>(
                 Consts.LOCATION_GLYPH,
                 "Location Glyph",
@@ -327,13 +321,7 @@ namespace GolemAutomation
                 {
                     new Subprint
                     {
-                        RequiredCards = new[]
-                        {
-                            Consts.PLANK,
-                            Consts.STICK,
-                            Consts.STICK,
-                            Consts.ANY_VILL
-                        },
+                        RequiredCards = new[] { Consts.PLANK, Consts.STICK, Consts.STICK, Consts.ANY_VILL },
                         ResultCard = Consts.STORAGE_PLACE,
                         Time = 10.0f,
                         StatusTerm = "Making Storage Place",
@@ -434,12 +422,7 @@ namespace GolemAutomation
                 {
                     new Subprint
                     {
-                        RequiredCards = new[]
-                        {
-                            Consts.ENERGY_COMBOBULATOR,
-                            Consts.GOLD_BAR,
-                            Consts.GLASS,
-                        },
+                        RequiredCards = new[] { Consts.ENERGY_COMBOBULATOR, Consts.GOLD_BAR, Consts.GLASS, },
                         ResultCard = Consts.ENERGY_CORE,
                         Time = 10.0f,
                         StatusTerm = "Making Golem Core",
@@ -454,13 +437,7 @@ namespace GolemAutomation
                 {
                     new Subprint
                     {
-                        RequiredCards = new[]
-                        {
-                            Consts.ENERGY_CORE,
-                            Consts.IRON_BAR,
-                            Consts.GLASS,
-                            Consts.ANY_VILL
-                        },
+                        RequiredCards = new[] { Consts.ENERGY_CORE, Consts.IRON_BAR, Consts.GLASS, Consts.ANY_VILL },
                         ResultCard = Consts.GOLEM,
                         Time = 10.0f,
                         StatusTerm = "Making Golem",

@@ -24,9 +24,7 @@ namespace GolemAutomation
 
             foreach (var card in __instance.AllCards)
             {
-                if (
-                    card.MyBoard.IsCurrent && card.CardData is StoragePlace f && card.Parent == null
-                )
+                if (card.MyBoard.IsCurrent && card.CardData is StoragePlace f && card.Parent == null)
                 {
                     Vector3 vec = card.transform.position - myCard.transform.position;
                     vec.y = 0f;
@@ -81,9 +79,7 @@ namespace GolemAutomation
 
         [HarmonyPatch(typeof(FishTrap), nameof(FishTrap.CompleteFishing))]
         [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> SendStackAfterFishing(
-            IEnumerable<CodeInstruction> instructions
-        )
+        public static IEnumerable<CodeInstruction> SendStackAfterFishing(IEnumerable<CodeInstruction> instructions)
         {
             return new CodeMatcher(instructions)
                 .MatchForward(
@@ -109,11 +105,7 @@ namespace GolemAutomation
 
         [HarmonyPatch(typeof(GameScreen), nameof(GameScreen.GetBlueprintGroupText))]
         [HarmonyPrefix]
-        public static void GolemBlueprintGroupText(
-            BlueprintGroup group,
-            ref string __result,
-            out bool __runOriginal
-        )
+        public static void GolemBlueprintGroupText(BlueprintGroup group, ref string __result, out bool __runOriginal)
         {
             if (group == Consts.BLUEPRINT_GROUP_GOLEM)
             {
@@ -164,11 +156,7 @@ namespace GolemAutomation
             );
         }
 
-        public static void AddBoosterIdea(
-            GameDataLoader __instance,
-            SetCardBag bag,
-            params string[] cardIds
-        )
+        public static void AddBoosterIdea(GameDataLoader __instance, SetCardBag bag, params string[] cardIds)
         {
             var existing = __instance.GetStringForBag(bag);
             __instance.result[bag] = existing + ", " + cardIds.Join(delimiter: ", ");
@@ -176,10 +164,13 @@ namespace GolemAutomation
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(SokLoc), nameof(SokLoc.SetLanguage))]
-        public static void LanguageChanged(SokLoc __instance) {
-            if (SokLoc.instance == null) return;
+        public static void LanguageChanged(SokLoc __instance)
+        {
+            if (SokLoc.instance == null)
+                return;
 
-            foreach (var term in CardLoader.Translations) {
+            foreach (var term in CardLoader.Translations)
+            {
                 SokLoc.instance.CurrentLocSet.TermLookup[term.Id] = term;
             }
         }
