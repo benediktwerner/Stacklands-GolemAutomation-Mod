@@ -139,7 +139,9 @@ namespace GolemAutomation
             AddBoosterIdea(
                 __instance,
                 SetCardBag.Island_AdvancedIdea,
+                Consts.Idea(Consts.PAPER),
                 Consts.Idea(Consts.LOCATION_GLYPH),
+                Consts.Idea(Consts.AREA_GLYPH),
                 Consts.Idea(Consts.ENERGY_CORE),
                 Consts.Idea(Consts.GOLEM_MOD),
                 Consts.Idea(Consts.GOLEM_MOD_SELL),

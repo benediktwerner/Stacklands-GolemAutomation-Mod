@@ -131,6 +131,8 @@ namespace GolemAutomation
                     {
                         Consts.Idea(Consts.GOLEM),
                         Consts.Idea(Consts.LOCATION_GLYPH),
+                        Consts.Idea(Consts.AREA_GLYPH),
+                        Consts.Idea(Consts.PAPER),
                         Consts.Idea(Consts.ENERGY_COMBOBULATOR),
                         Consts.Idea(Consts.ENERGY_CORE),
                         Consts.Idea(Consts.GOLEM_MOD),

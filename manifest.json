@@ -1,7 +1,7 @@
 {
   "name": "GolemAutomation",
   "description": "Automate Stacklands using Golems",
-  "version_number": "1.2.5",
+  "version_number": "1.2.6",
   "dependencies": ["BepInEx-BepInExPack_Stacklands-5.4.2100"],
   "website_url": "https://github.com/benediktwerner/Stacklands-GolemAutomation-Mod"
 }
