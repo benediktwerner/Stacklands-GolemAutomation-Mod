@@ -10,20 +10,12 @@ namespace GolemAutomation
             var result = new List<GameCard>();
             foreach (var card in WorldManager.instance.AllCards)
             {
-                if (
-                    card.MyBoard.IsCurrent
-                    && card.CardData is StoragePlace f
-                    && card.Parent == null
-                    && card.Child != null
-                )
+                if (card.MyBoard.IsCurrent && card.Parent == null)
                 {
-                    Vector3 vec = card.transform.position - MyGameCard.transform.position;
-                    vec.y = 0f;
-                    var dist = vec.sqrMagnitude;
-                    if (dist <= 9f && !card.BeingDragged)
-                    {
+                    Vector3 dist = card.transform.position - MyGameCard.transform.position;
+                    dist.y = 0f;
+                    if (dist.sqrMagnitude <= 9f && !card.BeingDragged)
                         result.Add(card);
-                    }
                 }
             }
             for (int i = 0; i < result.Count; i++)
