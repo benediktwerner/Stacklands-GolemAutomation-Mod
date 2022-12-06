@@ -90,8 +90,7 @@ namespace GolemAutomation
             {
                 descriptionOverride += "Counter: " + Counter + "\n";
             }
-            descriptionOverride +=
-                "Remaining Module Slots: " + ModulesLeft + "\nUse a villager to remove modules";
+            descriptionOverride += "Remaining Module Slots: " + ModulesLeft + "\nUse a villager to remove modules";
         }
 
         public override bool CanHaveCard(CardData otherCard)
@@ -126,12 +125,10 @@ namespace GolemAutomation
             {
                 if (g1.HasCardOnTop<LocationGlyph>(out var g2))
                 {
-                    return g2.MyGameCard.GetChildCount() + otherCard.MyGameCard.GetChildCount() + 1
-                            <= CarryingCapacity
+                    return g2.MyGameCard.GetChildCount() + otherCard.MyGameCard.GetChildCount() + 1 <= CarryingCapacity
                         || Card.IsCurrencyStack(otherCard);
                 }
-                return g1.MyGameCard.GetChildCount() + otherCard.MyGameCard.GetChildCount() + 1
-                        <= CarryingCapacity
+                return g1.MyGameCard.GetChildCount() + otherCard.MyGameCard.GetChildCount() + 1 <= CarryingCapacity
                     || Card.IsCurrencyStack(otherCard);
             }
             if (child.CardData is Golem)
@@ -187,12 +184,7 @@ namespace GolemAutomation
             }
             if (child is Glyph)
             {
-                MyGameCard.StartTimer(
-                    5f * SpeedModifier,
-                    new TimerAction(Work),
-                    "Working",
-                    GetActionId(nameof(Work))
-                );
+                MyGameCard.StartTimer(5f * SpeedModifier, new TimerAction(Work), "Working", GetActionId(nameof(Work)));
                 return true;
             }
             return false;
@@ -235,10 +227,7 @@ namespace GolemAutomation
                     {
                         break;
                     }
-                    var add = Math.Min(
-                        chestWithSpace.maxCoinCount - chestWithSpace.CoinCount,
-                        goldCount
-                    );
+                    var add = Math.Min(chestWithSpace.maxCoinCount - chestWithSpace.CoinCount, goldCount);
                     chestWithSpace.CoinCount += add;
                     goldCount -= add;
                 }
@@ -376,9 +365,7 @@ namespace GolemAutomation
             var list = new List<GameCard>();
             do
             {
-                if (
-                    list.Count == 0 || list[list.Count - 1].CardData.CanHaveCardOnTop(card.CardData)
-                )
+                if (list.Count == 0 || list[list.Count - 1].CardData.CanHaveCardOnTop(card.CardData))
                 {
                     list.Add(card);
                 }
@@ -493,8 +480,7 @@ namespace GolemAutomation
                     else if (target != null)
                     {
                         var targetRoot = target.GetRootCard();
-                        var spaceLeft =
-                            targetRoot.CardData is Chest ? 30 : 29 - targetRoot.GetChildCount();
+                        var spaceLeft = targetRoot.CardData is Chest ? 30 : 29 - targetRoot.GetChildCount();
                         var targetLeaf = target.GetLeafCard();
                         if (HasSellingModule)
                         {
@@ -536,9 +522,7 @@ namespace GolemAutomation
                     jumpTarget = jumpTarget.Child;
                     spaceLeftBase--;
                     if (
-                        recipeDictBase != null
-                        && recipeDictBase.TryGetValue(jumpTarget.CardData.Id, out int c)
-                        && c > 0
+                        recipeDictBase != null && recipeDictBase.TryGetValue(jumpTarget.CardData.Id, out int c) && c > 0
                     )
                     {
                         recipeDictBase[jumpTarget.CardData.Id]--;
@@ -547,8 +531,7 @@ namespace GolemAutomation
 
                 foreach (var source in g1.FindTargets())
                 {
-                    var recipeDict =
-                        recipeDictBase == null ? null : new Dictionary<string, int>(recipeDictBase);
+                    var recipeDict = recipeDictBase == null ? null : new Dictionary<string, int>(recipeDictBase);
                     var spaceLeft = spaceLeftBase;
                     if (Counter > 0)
                     {
@@ -563,13 +546,10 @@ namespace GolemAutomation
                     card = source.GetLeafCard();
                     var move = new List<GameCard>();
                     var leftover = new List<GameCard>();
-                    while (card != source && spaceLeft > 0)
+                    while (card != null && (g1 is not LocationGlyph || card != source) && spaceLeft > 0)
                     {
                         if (
-                            (
-                                recipeDict == null
-                                || recipeDict.TryGetValue(card.CardData.Id, out var c) && c > 0
-                            )
+                            (recipeDict == null || recipeDict.TryGetValue(card.CardData.Id, out var c) && c > 0)
                             && (
                                 (filter.Count == 0 || filter.Contains(card.CardData.Id))
                                 && (!HasSellingModule || card.CardData.Value != -1)
@@ -594,7 +574,7 @@ namespace GolemAutomation
                             Card.Restack(leftover);
                             Card.Parent(card, leftover[0]);
                         }
-                        else
+                        else if (card != null)
                             card.Child = null;
                         return;
                     }
@@ -610,11 +590,7 @@ namespace GolemAutomation
                 ModulesLeft--;
                 g.Insert(this);
                 DestroyChildrenMatchingPredicateAndRestack(c => g, 1);
-                AudioManager.me.PlaySound2D(
-                    AudioManager.me.CardDestroy,
-                    UnityEngine.Random.Range(0.8f, 1.2f),
-                    0.3f
-                );
+                AudioManager.me.PlaySound2D(AudioManager.me.CardDestroy, UnityEngine.Random.Range(0.8f, 1.2f), 0.3f);
                 UpdateModulePostfix();
                 UpdateDescription();
             }
@@ -628,11 +604,7 @@ namespace GolemAutomation
             {
                 removed.Add(
                     WorldManager.instance
-                        .CreateCard(
-                            transform.position,
-                            Consts.GOLEM_MOD_SELL,
-                            checkAddToStack: false
-                        )
+                        .CreateCard(transform.position, Consts.GOLEM_MOD_SELL, checkAddToStack: false)
                         .MyGameCard
                 );
             }
@@ -640,11 +612,7 @@ namespace GolemAutomation
             {
                 removed.Add(
                     WorldManager.instance
-                        .CreateCard(
-                            transform.position,
-                            Consts.GOLEM_MOD_SPEED,
-                            checkAddToStack: false
-                        )
+                        .CreateCard(transform.position, Consts.GOLEM_MOD_SPEED, checkAddToStack: false)
                         .MyGameCard
                 );
             }
