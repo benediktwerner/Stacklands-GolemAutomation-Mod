@@ -81,6 +81,7 @@ This mod requires BepInEx to work. BepInEx is a modding framework which allows m
 
 ## Changelog
 
+- v1.2.8: Make it work with the Order & Structure update
 - v1.2.7: Fix Area Glpyhs
 - v1.2.6: Make Paper and Area Glpyh ideas findable
 - v1.2.5: Optimize icon size
