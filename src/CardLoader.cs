@@ -97,13 +97,6 @@ namespace GolemAutomation
                 10,
                 CardType.Resources
             ),
-            Card.Create<Resource>(
-                Consts.CRASHED_SPACESHIP,
-                "Crashed Spaceship",
-                "This doesn't do anything anymore and only exists for backwards compatibility.",
-                5,
-                CardType.Resources
-            ),
             Card.Create<HarvestableWithIdea>(
                 Consts.BROKEN_GOLEM,
                 "Broken Golem",

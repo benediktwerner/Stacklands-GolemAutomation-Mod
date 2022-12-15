@@ -81,6 +81,10 @@ This mod requires BepInEx to work. BepInEx is a modding framework which allows m
 
 ## Changelog
 
+- v1.2.9:
+  - Make Storage Places work on Magic Glue
+  - Fix Humongougs Right Arm card icon
+  - Remove unobtainable Crashed Spaceship so you can 100% the cardopedia
 - v1.2.8: Make it work with the Order & Structure update
 - v1.2.7: Fix Area Glpyhs
 - v1.2.6: Make Paper and Area Glpyh ideas findable

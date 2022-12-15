@@ -24,7 +24,11 @@ namespace GolemAutomation
 
             foreach (var card in __instance.AllCards)
             {
-                if (card.MyBoard.IsCurrent && card.CardData is StoragePlace f && card.Parent == null)
+                if (
+                    card.MyBoard.IsCurrent
+                    && card.CardData is StoragePlace f
+                    && (card.Parent == null || card.Parent.CardData is HeavyFoundation)
+                )
                 {
                     Vector3 vec = card.transform.position - myCard.transform.position;
                     vec.y = 0f;
