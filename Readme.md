@@ -81,6 +81,9 @@ This mod requires BepInEx to work. BepInEx is a modding framework which allows m
 
 ## Changelog
 
+- v1.2.12:
+  - Prevent Golems with Area Glpyhs from picking up cards from the target location
+  - Fix crafting not stopping when a golem steals cards from the stack
 - v1.2.11:
   - Fix some crafting recipes not starting from cards moved by golems
 - v1.2.10:

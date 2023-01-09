@@ -106,12 +106,6 @@ namespace GolemAutomation
             // card.Velocity = new Vector3(vec.x * 4f, 7f, vec.z * 4f);
         }
 
-        public static void Parent(GameCard parent, GameCard child)
-        {
-            parent.Child = child;
-            child.Parent = parent;
-        }
-
         public static void InsertBelow(GameCard parent, GameCard child)
         {
             var leaf = child.GetLeafCard();

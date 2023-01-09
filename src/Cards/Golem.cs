@@ -238,14 +238,14 @@ namespace GolemAutomation
                 Card.BounceTo(first, target);
             else
             {
-                Card.Parent(parent, first);
+                parent.SetChild(first);
                 if (notGold.Count > 0)
-                    Card.Parent(gold[gold.Count - 1], notGold[0]);
+                    gold[gold.Count - 1].SetChild(notGold[0]);
                 return false;
             }
 
             if (notGold.Count > 0)
-                Card.Parent(parent, notGold[0]);
+                parent.SetChild(notGold[0]);
             else
                 parent.Child = null;
             return true;
@@ -312,7 +312,7 @@ namespace GolemAutomation
             if (unsellable.Count > 0)
             {
                 Card.Restack(unsellable);
-                Card.Parent(parent, unsellable[0]);
+                parent.SetChild(unsellable[0]);
             }
             if (sellable.Count > 0)
             {
@@ -343,7 +343,7 @@ namespace GolemAutomation
             if (unsellable.Count > 0)
             {
                 Card.Restack(unsellable);
-                Card.Parent(parent, unsellable[0]);
+                parent.SetChild(unsellable[0]);
             }
             if (sellable.Count > 0)
             {
@@ -420,10 +420,7 @@ namespace GolemAutomation
                 else
                     Card.BounceTo(craft[0], target.GetLeafCard());
                 Card.Restack(leftover);
-                if (leftover.Count > 0)
-                    Card.Parent(parent, leftover[0]);
-                else
-                    parent.Child = null;
+                parent.SetChild(leftover.Count > 0 ? leftover[0] : null);
                 return true;
             }
             return false;
@@ -531,6 +528,8 @@ namespace GolemAutomation
 
                 foreach (var source in g1.FindTargets())
                 {
+                    if (target != null && g1 is AreaGlyph && source.GetRootCard() == target.GetRootCard())
+                        continue;
                     var recipeDict = recipeDictBase == null ? null : new Dictionary<string, int>(recipeDictBase);
                     var spaceLeft = spaceLeftBase;
                     if (Counter > 0)
@@ -572,10 +571,10 @@ namespace GolemAutomation
                         if (leftover.Count > 0)
                         {
                             Card.Restack(leftover);
-                            Card.Parent(card, leftover[0]);
+                            leftover[0].SetParent(card);
                         }
                         else if (card != null)
-                            card.Child = null;
+                            card.SetChild(null);
                         return;
                     }
                 }
