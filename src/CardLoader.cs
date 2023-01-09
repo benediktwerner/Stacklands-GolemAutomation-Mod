@@ -279,14 +279,14 @@ namespace GolemAutomation
             Card.Create<GolemModuleCounter>(
                 Consts.GOLEM_MOD_COUNTER,
                 "Counter Module",
-                "Allows the golem to count (and only pick up cards from the source stack that are over the limit).\n\nPlace coins on it to set the count.",
+                "Allows the golem to count (and only pick up cards from the source stack that are over the limit).\n\nPlace currency on it to set the count.",
                 10,
                 CardType.Resources
             ),
             Card.Create<GolemModuleCrafter>(
                 Consts.GOLEM_MOD_CRAFTER,
                 "Crafter Module",
-                "Allows the golem to craft a recepie.\n\nPlace recepie on top to configure.",
+                "Allows the golem to craft a recipe.\n\nPlace recipe on top to configure.",
                 20,
                 CardType.Resources
             ),

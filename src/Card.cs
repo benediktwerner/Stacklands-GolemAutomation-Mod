@@ -136,11 +136,7 @@ namespace GolemAutomation
             var goldStack = WorldManager.instance.CreateCardStack(pos, value, Currency, false);
             if (goldStack != null)
             {
-                AudioManager.me.PlaySound2D(
-                    AudioManager.me.Coin,
-                    UnityEngine.Random.Range(0.8f, 1.2f),
-                    0.8f
-                );
+                AudioManager.me.PlaySound2D(AudioManager.me.Coin, UnityEngine.Random.Range(0.8f, 1.2f), 0.8f);
                 return goldStack.GetRootCard();
             }
             return null;
