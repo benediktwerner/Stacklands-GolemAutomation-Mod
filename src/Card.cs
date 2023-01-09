@@ -99,6 +99,9 @@ namespace GolemAutomation
             // card.BounceTarget = to;
             to.Child = card;
             card.Parent = to;
+            to.StackUpdate = true;
+            card.StackUpdate = true;
+            to.GetRootCard().StackUpdate = true;
             // var vec = to.transform.position - card.transform.position;
             // card.Velocity = new Vector3(vec.x * 4f, 7f, vec.z * 4f);
         }

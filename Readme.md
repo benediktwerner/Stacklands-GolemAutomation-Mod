@@ -81,6 +81,8 @@ This mod requires BepInEx to work. BepInEx is a modding framework which allows m
 
 ## Changelog
 
+- v1.2.11:
+  - Fix some crafting recipes not starting from cards moved by golems
 - v1.2.10:
   - Fix "recipe" being misspelled in some places
   - Clarify that Counter Module takes shells on the island
