@@ -17,7 +17,7 @@ namespace GolemAutomation
 
         public static void AddCards(List<CardData> allCards)
         {
-            cardContainer = new GameObject("CardContainer - " + PluginInfo.PLUGIN_NAME);
+            cardContainer = new GameObject("CardContainer - GolemAutomation");
             cardContainer.gameObject.SetActive(false);
 
             foreach (var c in Cards)
@@ -30,7 +30,7 @@ namespace GolemAutomation
                 AddTranslation(card.NameTerm, c.Name);
                 card.DescriptionTerm = c.Id + "_desc";
                 AddTranslation(card.DescriptionTerm, c.Description);
-                var path = Path.Combine(Path.GetDirectoryName(Plugin.Instance.Info.Location), "icons", c.Id + ".png");
+                var path = Path.Combine(Plugin.Instance.Path, "icons", c.Id + ".png");
                 if (File.Exists(path))
                 {
                     var tex = new Texture2D(1024, 1024, TextureFormat.RGBA32, false);

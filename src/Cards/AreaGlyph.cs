@@ -18,13 +18,7 @@ namespace GolemAutomation
                         result.Add(card);
                 }
             }
-            for (int i = 0; i < result.Count; i++)
-            {
-                var temp = result[i];
-                int randomIndex = UnityEngine.Random.Range(i, result.Count);
-                result[i] = result[randomIndex];
-                result[randomIndex] = temp;
-            }
+            result.Shuffle();
             return result;
         }
     }

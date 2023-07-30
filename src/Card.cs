@@ -44,7 +44,8 @@ namespace GolemAutomation
             CardType cardType,
             bool building = false,
             Action<T> init = null
-        ) where T : CardData
+        )
+            where T : CardData
         {
             return new Card(
                 id,
@@ -104,6 +105,24 @@ namespace GolemAutomation
             to.GetRootCard().StackUpdate = true;
             // var vec = to.transform.position - card.transform.position;
             // card.Velocity = new Vector3(vec.x * 4f, 7f, vec.z * 4f);
+        }
+
+        public static void Parent(GameCard parent, GameCard child)
+        {
+            parent.Child = child;
+            child.Parent = parent;
+            parent.GetRootCard().StackUpdate = true;
+            child.StackUpdate = true;
+        }
+
+        public static GameCard Prepend(GameCard parent, GameCard child)
+        {
+            parent.Child = child;
+            if (child != null)
+            {
+                child.Parent = parent;
+            }
+            return parent;
         }
 
         public static void InsertBelow(GameCard parent, GameCard child)

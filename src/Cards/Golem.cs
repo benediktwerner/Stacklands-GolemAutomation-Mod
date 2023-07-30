@@ -227,7 +227,7 @@ namespace GolemAutomation
                     {
                         break;
                     }
-                    var add = Math.Min(chestWithSpace.maxCoinCount - chestWithSpace.CoinCount, goldCount);
+                    var add = Math.Min(chestWithSpace.MaxCoinCount - chestWithSpace.CoinCount, goldCount);
                     chestWithSpace.CoinCount += add;
                     goldCount -= add;
                 }
@@ -238,14 +238,14 @@ namespace GolemAutomation
                 Card.BounceTo(first, target);
             else
             {
-                parent.SetChild(first);
+                Card.Parent(parent, first);
                 if (notGold.Count > 0)
-                    gold[gold.Count - 1].SetChild(notGold[0]);
+                    Card.Parent(gold[gold.Count - 1], notGold[0]);
                 return false;
             }
 
             if (notGold.Count > 0)
-                parent.SetChild(notGold[0]);
+                Card.Parent(parent, notGold[0]);
             else
                 parent.Child = null;
             return true;
@@ -312,7 +312,7 @@ namespace GolemAutomation
             if (unsellable.Count > 0)
             {
                 Card.Restack(unsellable);
-                parent.SetChild(unsellable[0]);
+                Card.Parent(parent, unsellable[0]);
             }
             if (sellable.Count > 0)
             {
@@ -343,7 +343,7 @@ namespace GolemAutomation
             if (unsellable.Count > 0)
             {
                 Card.Restack(unsellable);
-                parent.SetChild(unsellable[0]);
+                Card.Parent(parent, unsellable[0]);
             }
             if (sellable.Count > 0)
             {
@@ -420,7 +420,7 @@ namespace GolemAutomation
                 else
                     Card.BounceTo(craft[0], target.GetLeafCard());
                 Card.Restack(leftover);
-                parent.SetChild(leftover.Count > 0 ? leftover[0] : null);
+                Card.Parent(parent, leftover.Count > 0 ? leftover[0] : null);
                 return true;
             }
             return false;
@@ -528,7 +528,10 @@ namespace GolemAutomation
 
                 foreach (var source in g1.FindTargets())
                 {
-                    if (target != null && g1 is AreaGlyph && source.GetRootCard() == target.GetRootCard())
+                    var sourceRoot = source.GetRootCard();
+                    if (
+                        sourceRoot == MyGameCard.GetRootCard() || (target != null && sourceRoot == target.GetRootCard())
+                    )
                         continue;
                     var recipeDict = recipeDictBase == null ? null : new Dictionary<string, int>(recipeDictBase);
                     var spaceLeft = spaceLeftBase;
@@ -543,8 +546,8 @@ namespace GolemAutomation
                     if (spaceLeft <= 0)
                         continue;
                     card = source.GetLeafCard();
-                    var move = new List<GameCard>();
-                    var leftover = new List<GameCard>();
+                    GameCard move = null;
+                    GameCard leftover = null;
                     while (card != null && (g1 is not LocationGlyph || card != source) && spaceLeft > 0)
                     {
                         if (
@@ -558,23 +561,33 @@ namespace GolemAutomation
                             if (recipeDict != null)
                                 recipeDict[card.CardData.Id]--;
                             spaceLeft--;
-                            move.Add(card);
+                            move = Card.Prepend(card, move);
                         }
                         else
-                            leftover.Add(card);
+                        {
+                            leftover = Card.Prepend(card, leftover);
+                        }
                         card = card.Parent;
                     }
-                    if (move.Count > 0)
+                    if (card != null)
                     {
-                        Card.Restack(move);
-                        Card.BounceTo(move[0], jumpTarget);
-                        if (leftover.Count > 0)
+                        if (leftover != null)
+                            Card.Parent(card, leftover);
+                        else
                         {
-                            Card.Restack(leftover);
-                            leftover[0].SetParent(card);
+                            card.Child = null;
+                            card.GetRootCard().StackUpdate = true;
                         }
-                        else if (card != null)
-                            card.SetChild(null);
+                    }
+                    else if (leftover != null)
+                    {
+                        leftover.Parent = null;
+                        if (move != null)
+                            leftover.StackUpdate = true;
+                    }
+                    if (move != null)
+                    {
+                        Card.BounceTo(move, jumpTarget);
                         return;
                     }
                 }

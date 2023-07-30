@@ -3,6 +3,7 @@
 This mod adds golems which can be used to automate moving around cards, selling them, and crafting things.
 
 To find the ideas for the cards:
+
 - Buy `Logic and Reason` packs (on the mainland) for storage place and filter
 - Buy `Island Insights` packs for all the golem stuff
 - Explore the `Jungle` to find the ideas for humongous golems and get some ressources
@@ -58,29 +59,20 @@ place a villager onto the golem.
 - **Counter Module**: Use coins onto the module before inserting it to set the counter to that amount of coins. The golem will then only take cards from a stack if it has more than that number of cards. This can for example be used to keep a certain number of cards but sell everything above that.
 - **Crafting Module**: Set a recipe by placing the corresponding cards onto the module before inserting it. The golem will then take cards to build up that exact stack and then dump it next to itself to make the crafting start. You can use a Storage Place to collect the result. Mutually exclusive with the Selling Module.
 
-## Manual Installation
-This mod requires BepInEx to work. BepInEx is a modding framework which allows multiple mods to be loaded.
-
-1. Download and install BepInEx from the [Thunderstore](https://stacklands.thunderstore.io/package/BepInEx/BepInExPack_Stacklands/).
-4. Download this mod and extract it into `BepInEx/plugins/`
-5. Launch the game
-
 ## Development
-1. Install BepInEx
-2. This mod uses publicized game DLLs to get private members without reflection
-   - Use https://github.com/CabbageCrow/AssemblyPublicizer for example to publicize `Stacklands/Stacklands_Data/Managed/GameScripts.dll` (just drag the DLL onto the publicizer exe)
-   - This outputs to `Stacklands_Data\Managed\publicized_assemblies\GameScripts_publicized.dll` (if you use another publicizer, place the result there)
-3. Compile the project. This copies the resulting DLL into `<GAME_PATH>/BepInEx/plugins/`.
-   - Your `GAME_PATH` should automatically be detected. If it isn't, you can manually set it in the `.csproj` file.
-   - If you're using VSCode, the `.vscode/tasks.json` file should make it so that you can just do `Run Build`/`Ctrl+Shift+B` to build.
+
+- Build using `dotnet build`
+- For release builds, add `-c Release`
+- If you're using VSCode, the `.vscode/tasks.json` file allows building via `Run Build`/`Ctrl+Shift+B`
 
 ## Links
+
 - Github: https://github.com/benediktwerner/Stacklands-GolemAutomation-Mod
-- Thunderstore: https://stacklands.thunderstore.io/package/benediktwerner/GolemAutomation
-- Nexusmods: https://www.nexusmods.com/stacklands/mods/8
+- Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3012158526
 
 ## Changelog
 
+- v1.3.0: Steam Workshop Support
 - v1.2.12:
   - Prevent Golems with Area Glpyhs from picking up cards from the target location
   - Fix crafting not stopping when a golem steals cards from the stack
