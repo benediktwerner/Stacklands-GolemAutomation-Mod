@@ -40,6 +40,7 @@ namespace GolemAutomation
                 card.Value = c.Value;
                 card.MyCardType = c.CardType;
                 card.IsBuilding = c.IsBuilding;
+                card.CardUpdateType = CardUpdateType.Mod;
                 if (c.CardType == CardType.Structures)
                 {
                     card.PickupSoundGroup = PickupSoundGroup.Heavy;
@@ -61,6 +62,7 @@ namespace GolemAutomation
                 card.BlueprintGroup = idea.Group;
                 card.Subprints = idea.Subprints;
                 card.NeedsExactMatch = idea.NeedsExactMatch;
+                card.CardUpdateType = CardUpdateType.Mod;
                 foreach (var sub in card.Subprints)
                 {
                     var term = Consts.PREFIX + sub.StatusTerm.Replace(" ", "").ToLower();

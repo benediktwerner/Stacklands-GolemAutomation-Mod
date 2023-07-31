@@ -72,6 +72,7 @@ place a villager onto the golem.
 
 ## Changelog
 
+- v1.3.1: Show GolemAutomation cards in mod category in the Cardopedia
 - v1.3.0: Steam Workshop Support
 - v1.2.12:
   - Prevent Golems with Area Glpyhs from picking up cards from the target location
