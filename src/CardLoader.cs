@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -20,7 +21,7 @@ namespace GolemAutomation
             cardContainer = new GameObject("CardContainer - GolemAutomation");
             cardContainer.gameObject.SetActive(false);
 
-            foreach (var c in Cards)
+            foreach (var c in CardsToAdd)
             {
                 var go = new GameObject(c.Id);
                 go.transform.SetParent(cardContainer.transform);
@@ -73,7 +74,7 @@ namespace GolemAutomation
             }
         }
 
-        public static readonly Card[] Cards = new[]
+        public static readonly Card[] CardsToAdd = new[]
         {
             Card.Create<Resource>(Consts.PAPER, "Paper", "This is paper", 1, CardType.Resources),
             Card.Create<StoragePlace>(
@@ -127,7 +128,6 @@ namespace GolemAutomation
                         Consts.Idea(Consts.GOLEM),
                         Consts.Idea(Consts.LOCATION_GLYPH),
                         Consts.Idea(Consts.AREA_GLYPH),
-                        Consts.Idea(Consts.PAPER),
                         Consts.Idea(Consts.ENERGY_COMBOBULATOR),
                         Consts.Idea(Consts.ENERGY_CORE),
                         Consts.Idea(Consts.GOLEM_MOD),
@@ -297,21 +297,6 @@ namespace GolemAutomation
         public static readonly Idea[] Ideas = new[]
         {
             new Idea(
-                Consts.PAPER,
-                BlueprintGroup.Resources,
-                new List<Subprint>
-                {
-                    new Subprint
-                    {
-                        RequiredCards = new[] { Consts.BRICK, Consts.SUGAR_CANE },
-                        ResultCard = Consts.PAPER,
-                        CardsToRemove = new[] { Consts.SUGAR_CANE },
-                        Time = 10.0f,
-                        StatusTerm = "Making Paper",
-                    },
-                }
-            ),
-            new Idea(
                 Consts.STORAGE_PLACE,
                 BlueprintGroup.Building,
                 new List<Subprint>
@@ -384,33 +369,34 @@ namespace GolemAutomation
             new Idea(
                 Consts.ENERGY_COMBOBULATOR,
                 Consts.BLUEPRINT_GROUP_GOLEM,
-                new List<Subprint>
-                {
-                    new Subprint
-                    {
-                        RequiredCards = new[]
+                Variants(
+                    new[] { Cards.paper, Consts.PAPER },
+                    paper =>
+                        new Subprint
                         {
-                            Consts.BRICK,
-                            Consts.BRICK,
-                            Consts.BRICK,
-                            Consts.IRON_BAR,
-                            Consts.IRON_BAR,
-                            Consts.IRON_BAR,
-                            Consts.GOLD_BAR,
-                            Consts.GOLD_BAR,
-                            Consts.GOLD_BAR,
-                            Consts.GLASS,
-                            Consts.GLASS,
-                            Consts.GLASS,
-                            Consts.PAPER,
-                            Consts.ANY_VILL,
-                            Consts.ANY_VILL
-                        },
-                        ResultCard = Consts.ENERGY_COMBOBULATOR,
-                        Time = 30.0f,
-                        StatusTerm = "Making Energy Combobulator",
-                    },
-                }
+                            RequiredCards = new[]
+                            {
+                                Consts.BRICK,
+                                Consts.BRICK,
+                                Consts.BRICK,
+                                Consts.IRON_BAR,
+                                Consts.IRON_BAR,
+                                Consts.IRON_BAR,
+                                Consts.GOLD_BAR,
+                                Consts.GOLD_BAR,
+                                Consts.GOLD_BAR,
+                                Consts.GLASS,
+                                Consts.GLASS,
+                                Consts.GLASS,
+                                paper,
+                                Consts.ANY_VILL,
+                                Consts.ANY_VILL
+                            },
+                            ResultCard = Consts.ENERGY_COMBOBULATOR,
+                            Time = 30.0f,
+                            StatusTerm = "Making Energy Combobulator",
+                        }
+                )
             ),
             new Idea(
                 Consts.ENERGY_CORE,
@@ -558,16 +544,17 @@ namespace GolemAutomation
             new Idea(
                 Consts.GOLEM_MOD,
                 Consts.BLUEPRINT_GROUP_GOLEM,
-                new List<Subprint>
-                {
-                    new Subprint
-                    {
-                        RequiredCards = new[] { Consts.ENERGY_CORE, Consts.PAPER },
-                        ResultCard = Consts.GOLEM_MOD,
-                        Time = 10.0f,
-                        StatusTerm = "Making Golem Module",
-                    },
-                }
+                Variants(
+                    new[] { Cards.paper, Consts.PAPER },
+                    paper =>
+                        new Subprint
+                        {
+                            RequiredCards = new[] { Consts.ENERGY_CORE, paper },
+                            ResultCard = Consts.GOLEM_MOD,
+                            Time = 10.0f,
+                            StatusTerm = "Making Golem Module",
+                        }
+                )
             ),
             new Idea(
                 Consts.GOLEM_MOD_SELL,
@@ -622,7 +609,7 @@ namespace GolemAutomation
                 {
                     new Subprint
                     {
-                        RequiredCards = new[] { Consts.GOLEM_MOD, Consts.PAPER, Consts.COIN },
+                        RequiredCards = new[] { Consts.GOLEM_MOD, Cards.paper, Consts.COIN },
                         ResultCard = Consts.GOLEM_MOD_COUNTER,
                         Time = 10.0f,
                         StatusTerm = "Making Counter Module",
@@ -652,5 +639,15 @@ namespace GolemAutomation
                 }
             ),
         };
+
+        static List<Subprint> Variants(string[] variants, Func<string, Subprint> forEach)
+        {
+            var list = new List<Subprint>();
+            foreach (var variant in variants)
+            {
+                list.Add(forEach(variant));
+            }
+            return list;
+        }
     }
 }

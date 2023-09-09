@@ -26,7 +26,7 @@ namespace GolemAutomation
             );
             AddBoosterIdea(
                 SetCardBagType.Island_AdvancedIdea,
-                Consts.Idea(Consts.PAPER),
+                Consts.Idea(Cards.paper),
                 Consts.Idea(Consts.LOCATION_GLYPH),
                 Consts.Idea(Consts.AREA_GLYPH),
                 Consts.Idea(Consts.ENERGY_CORE),
