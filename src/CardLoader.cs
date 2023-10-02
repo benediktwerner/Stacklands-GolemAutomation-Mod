@@ -76,7 +76,17 @@ namespace GolemAutomation
 
         public static readonly Card[] CardsToAdd = new[]
         {
-            Card.Create<Resource>(Consts.PAPER, "Paper", "This is paper", 1, CardType.Resources),
+            Card.Create<Resource>(
+                Consts.PAPER,
+                "Paper",
+                "This is paper",
+                1,
+                CardType.Resources,
+                init: (c) =>
+                {
+                    c.HideFromCardopedia = true;
+                }
+            ),
             Card.Create<StoragePlace>(
                 Consts.STORAGE_PLACE,
                 "Storage Place",
