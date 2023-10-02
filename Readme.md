@@ -72,6 +72,7 @@ place a villager onto the golem.
 
 ## Changelog
 
+- v1.3.4: Fix "Island of Insights" booster pack being broken
 - v1.3.3: Hide the mod's old paper card from the Cardopedia
 - v1.3.2: Allow vanilla paper in all recipes. Existing paper from this mod will remain for backwards compatibility but won't be craftable anymore.
 - v1.3.1: Show GolemAutomation cards in mod category in the Cardopedia
