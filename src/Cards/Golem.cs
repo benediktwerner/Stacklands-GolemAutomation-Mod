@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace GolemAutomation
 {
@@ -307,7 +308,7 @@ namespace GolemAutomation
             if (gold.Count > 0)
             {
                 Card.Restack(gold);
-                WorldManager.instance.StackSend(gold[0]);
+                WorldManager.instance.StackSend(gold[0], Vector3.zero);
             }
             if (unsellable.Count > 0)
             {
@@ -372,7 +373,7 @@ namespace GolemAutomation
                 else
                 {
                     Card.Restack(list);
-                    WorldManager.instance.StackSend(list[0]);
+                    WorldManager.instance.StackSend(list[0], Vector3.zero);
                     list = new List<GameCard> { card };
                 }
                 card = card.Child;
@@ -380,7 +381,7 @@ namespace GolemAutomation
             if (list.Count > 0)
             {
                 Card.Restack(list);
-                WorldManager.instance.StackSend(list[0]);
+                WorldManager.instance.StackSend(list[0], Vector3.zero);
             }
         }
 
@@ -519,7 +520,9 @@ namespace GolemAutomation
                     jumpTarget = jumpTarget.Child;
                     spaceLeftBase--;
                     if (
-                        recipeDictBase != null && recipeDictBase.TryGetValue(jumpTarget.CardData.Id, out int c) && c > 0
+                        recipeDictBase != null
+                        && recipeDictBase.TryGetValue(jumpTarget.CardData.Id, out int c)
+                        && c > 0
                     )
                     {
                         recipeDictBase[jumpTarget.CardData.Id]--;
@@ -530,7 +533,8 @@ namespace GolemAutomation
                 {
                     var sourceRoot = source.GetRootCard();
                     if (
-                        sourceRoot == MyGameCard.GetRootCard() || (target != null && sourceRoot == target.GetRootCard())
+                        sourceRoot == MyGameCard.GetRootCard()
+                        || (target != null && sourceRoot == target.GetRootCard())
                     )
                         continue;
                     var recipeDict = recipeDictBase == null ? null : new Dictionary<string, int>(recipeDictBase);
@@ -615,16 +619,16 @@ namespace GolemAutomation
             if (HasSellingModule)
             {
                 removed.Add(
-                    WorldManager.instance
-                        .CreateCard(transform.position, Consts.GOLEM_MOD_SELL, checkAddToStack: false)
+                    WorldManager
+                        .instance.CreateCard(transform.position, Consts.GOLEM_MOD_SELL, checkAddToStack: false)
                         .MyGameCard
                 );
             }
             for (var i = 0; i < SpeedModules; i++)
             {
                 removed.Add(
-                    WorldManager.instance
-                        .CreateCard(transform.position, Consts.GOLEM_MOD_SPEED, checkAddToStack: false)
+                    WorldManager
+                        .instance.CreateCard(transform.position, Consts.GOLEM_MOD_SPEED, checkAddToStack: false)
                         .MyGameCard
                 );
             }
@@ -656,7 +660,7 @@ namespace GolemAutomation
             {
                 ModulesLeft += removed.Count;
                 Card.Restack(removed);
-                WorldManager.instance.StackSend(removed[0]);
+                WorldManager.instance.StackSend(removed[0], Vector3.zero);
             }
             HasSellingModule = false;
             SpeedModules = 0;
