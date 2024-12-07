@@ -1,6 +1,6 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection.Emit;
+using HarmonyLib;
 using UnityEngine;
 
 namespace GolemAutomation
@@ -81,22 +81,6 @@ namespace GolemAutomation
                 __state = parent;
         }
 
-        [HarmonyPatch(typeof(FishTrap), nameof(FishTrap.CompleteFishing))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> SendStackAfterFishing(IEnumerable<CodeInstruction> instructions)
-        {
-            return new CodeMatcher(instructions)
-                .MatchForward(
-                    false,
-                    new CodeMatch(OpCodes.Ldloc_3),
-                    new CodeMatch(OpCodes.Isinst, typeof(Animal)),
-                    new CodeMatch(OpCodes.Brtrue)
-                )
-                .ThrowIfInvalid("Didn't find isAnimal check")
-                .RemoveInstructions(3)
-                .InstructionEnumeration();
-        }
-
         [HarmonyPatch(typeof(CardData), nameof(CardData.Name), MethodType.Getter)]
         [HarmonyPostfix]
         public static void GolemName(ref string __result, CardData __instance)
@@ -129,7 +113,7 @@ namespace GolemAutomation
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(SokLoc), nameof(SokLoc.SetLanguage))]
-        public static void LanguageChanged(SokLoc __instance)
+        public static void LanguageChanged()
         {
             if (SokLoc.instance == null)
                 return;
